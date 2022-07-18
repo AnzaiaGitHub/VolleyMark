@@ -1,3 +1,6 @@
+@page{
+    size: landscape;
+}
 :root{
     --dark: #002; 
     --light: #dff;
