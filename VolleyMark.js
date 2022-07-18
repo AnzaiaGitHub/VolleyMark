@@ -38,6 +38,7 @@ window.addEventListener('load', ()=>{
     }else{
         resetGame();
     }
+    document.querySelector("body").requestFullscreen();
 });
 document.querySelectorAll(".position").forEach(element => {
     element.addEventListener('click',()=>{
