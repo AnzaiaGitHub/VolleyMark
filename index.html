@@ -13,9 +13,17 @@
         <div id="teamA">
           <p id="teamNameA" class="teamName">Team A</p>
           <div id="setScoreA" class="setsWon">0</div>
+          <div class="setTeamController column">
+            <div class="btn btn-minimal btn-padding" onclick="addSetWonTeam('A')">+</div>
+            <div class="btn btn-minimal btn-padding" onclick="subtractSetWonTeam('A')">-</div>
+          </div>
         </div>
         <button id="changeSide" class="btn btn-standard btn-padding" onclick="changeSide()">Cambiar Lados</button>
         <div id="teamB">
+          <div class="setTeamController column">
+            <div class="btn btn-minimal btn-padding" onclick="addSetWonTeam('B')">+</div>
+            <div class="btn btn-minimal btn-padding" onclick="subtractSetWonTeam('B')">-</div>
+          </div>
           <div id="setScoreB" class="setsWon">1</div>
           <p id="teamNameB" class="teamName">Team B</p>
         </div>

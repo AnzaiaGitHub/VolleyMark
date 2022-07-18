@@ -38,7 +38,6 @@ window.addEventListener('load', ()=>{
     }else{
         resetGame();
     }
-    document.querySelector("body").requestFullscreen();
 });
 document.querySelectorAll(".position").forEach(element => {
     element.addEventListener('click',()=>{
@@ -298,5 +297,25 @@ function editPosition(team){
         TeamA.TeamPosition = newPosition;
     else
         TeamB.TeamPosition = newPosition;
+    renderGame();
+}
+
+function addSetWonTeam(team){
+    if(team=="A"){
+        TeamA.SetsWon++;
+    }else{
+        TeamB.SetsWon++;
+    }
+    renderGame();
+}
+
+function subtractSetWonTeam(team){
+    if(team=="A"){
+        if(TeamA.SetsWon>0)
+            TeamA.SetsWon--;
+    }else{
+        if(TeamB.SetsWon>0)
+            TeamB.SetsWon--;
+    }
     renderGame();
 }

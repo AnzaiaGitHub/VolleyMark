@@ -73,12 +73,19 @@ div.column{
     padding: 8px;
     background-color: #aaf;
 }
+.btn-minimal{
+    padding: 1px;
+    font-size: 1rem;
+    border: 1px solid var(--neon3);
+}
 
 /*Specific styles*/
 /*Team Name, Sets Won*/
 #teamInfo>div{
-    width: 50vw;
+    max-width: 45vw;
+    width: 50%;
     font-size: 1.5rem;
+    position: relative;
 }
 #teamInfo>div>.setsWon{
     background-color: #fff;
@@ -86,6 +93,11 @@ div.column{
     color: var(--dark);
     font-weight: bold;
     border-radius: 3px;
+}
+.setTeamController{
+    position: relative;
+    padding: 0;
+    text-align: center;
 }
 
 /*Set Score Points*/
