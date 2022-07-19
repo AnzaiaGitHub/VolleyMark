@@ -1,6 +1,8 @@
 //Variables
+const Modal = document.getElementById("modal");
+const modalContent = document.getElementById("modalContent");
 var Game = null;
-var TeamA,TeamB;
+var TeamA,TeamB, maxSetPoints;
 var RenderTeamA = {
     Name: document.querySelector("#teamNameA"),
     SetsWon: document.querySelector("#setScoreA"),
@@ -41,7 +43,7 @@ window.addEventListener('load', ()=>{
 });
 document.querySelectorAll(".position").forEach(element => {
     element.addEventListener('click',()=>{
-        let newPlayer = prompt(`Escriba el numero del jugador en posicion ${parseInt(element.id[1])}`, 22);
+        let newPlayer = prompt(`Escriba el numero del jugador en posicion ${parseInt(element.id[1])}`);
         if(newPlayer==null)
             return;
         // if(Number(newPlayer)){
@@ -79,13 +81,19 @@ document.querySelectorAll(".check").forEach(element=>{
 document.querySelectorAll(".teamName").forEach(element=>{
     element.addEventListener('click', ()=>{
         let newName = prompt("Escriba el nombre del equipo");
-        if(element.id.includes("A")){
-            TeamA.Name = newName!=""?newName:TeamA.Name;
-        }else{
-            TeamB.Name = newName!=""?newName:TeamB.Name;
+        if(newName!=null && newName!=""){
+            if(element.id.includes("A")){
+                TeamA.Name = newName;
+            }else{
+                TeamB.Name = newName;
+            }
+            renderGame();
         }
-        renderGame();
     });
+});
+document.getElementById("editOptions").addEventListener("click",()=>{
+    Modal.style.display = "flex";
+    editOptions();
 });
 
 //Functions
@@ -112,6 +120,12 @@ function resetGame(){
         TimeOuts: 0,
         Service: false
     };
+    maxSetPoints = {
+        Points: 25,
+        diffPoints:true,
+        firstReachMax:false,
+        sets:5
+    };
     renderGame();
 }
 
@@ -119,6 +133,7 @@ function loadGame(gm){
     Game = JSON.parse(gm);
     TeamA = Game[0];
     TeamB = Game[1];
+    maxSetPoints = Game[2];
     renderGame();
 }
 
@@ -137,6 +152,7 @@ function addPointTeam(Team){
         }
     }
     renderGame();
+    winCondition();
 }
 
 function subtractPointTeam(Team){
@@ -202,13 +218,15 @@ function renderGame(){
         }
     }
 
-    Game = [TeamA,TeamB];
+    Game = [TeamA,TeamB,maxSetPoints];
     localStorage.setItem("Game", JSON.stringify(Game));
 }
 
 function resetScore(){
     TeamA.Score=0;
     TeamB.Score=0;
+    TeamA.TimeOuts=0;
+    TeamB.TimeOuts=0;
     renderGame();
 }
 
@@ -318,4 +336,83 @@ function subtractSetWonTeam(team){
             TeamB.SetsWon--;
     }
     renderGame();
+}
+
+function closeModal(){
+    Modal.style.display = "none";
+}
+
+function editOptions(){
+    let render =`
+    <form>
+        <label for="maxPoints">
+            Puntos máximos por set
+            <input id="maxPoints" type="text" value="${maxSetPoints.Points}" placeholder="25">
+        </label>
+        <label for="pointsDiff">
+            Gana por diferencia de 2 puntos
+            <input name="winCondition" id="pointsDiff" type="radio">
+        </label>
+        <label for="goldenPoint" id="goldenPointLabel">
+            Gana el primero con ${maxSetPoints.Points} puntos
+            <input name="winCondition" id="goldenPoint" type="radio">
+        </label>
+        <div class="form-end">
+            <button class="btn btn-standard" onclick="closeModal()">Cancelar</button>
+            <button class="btn btn-standard" id="saveInfo">Guardar</button>
+        </div>
+    </form>
+    `;
+    setModalContent(render);
+    let pDiff = document.getElementById("pointsDiff");
+    let gPoint = document.getElementById("goldenPoint");
+    let mPoints = document.getElementById("maxPoints");
+    mPoints.addEventListener("input",()=>{
+        document.getElementById("goldenPointLabel").innerHTML=`Gana el primero con ${mPoints.value} puntos
+        <input name="winCondition" id="goldenPoint" type="radio">`;
+    });
+    if(maxSetPoints.diffPoints)
+        pDiff.setAttribute("checked",true);
+    else
+        gPoint.setAttribute("checked",true);
+    document.getElementById("saveInfo").addEventListener("click",()=>{
+        maxSetPoints.Points=isNaN(parseInt(mPoints.value))?maxSetPoints.Points:parseInt(mPoints.value);
+        maxSetPoints.diffPoints = pDiff.checked;
+        maxSetPoints.firstReachMax = gPoint.checked;
+        closeModal();
+        renderGame();
+    });
+}
+
+function setModalContent(content){
+    modalContent.innerHTML = content;
+}
+
+function winCondition(){
+    if(maxSetPoints.firstReachMax){
+        if(TeamA.Score==maxSetPoints.Points || TeamB.Score==maxSetPoints.Points){
+            if(TeamA.Score>TeamB.Score){
+                winTeam('A');
+            }else{
+                winTeam('B');
+            }
+        }
+    }else{
+        if(Math.abs(TeamA.Score-TeamB.Score)==2 && (TeamA.Score >= maxSetPoints.Points || TeamB.Score >= maxSetPoints.Points)){
+            if(TeamA.Score>TeamB.Score){
+                winTeam('A');
+            }else{
+                winTeam('B');
+            }
+        }
+    }
+}
+
+function winTeam(team){
+    let winnerTeam = TeamA.Score>TeamB.Score?TeamA:TeamB;
+    let loserTeam = TeamB.Score>TeamA.Score?TeamA:TeamB;
+    alert(`Gana el equipo ${winnerTeam.Name} ${winnerTeam.Score} a ${loserTeam.Score} contra el equipo ${loserTeam.Name}`);
+    addSetWonTeam(team);
+    resetScore();
+    changeSide();
 }

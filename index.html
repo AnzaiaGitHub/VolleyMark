@@ -127,18 +127,24 @@
         </div>
         <div class="setScorePoint column">
           <button
+            id="editOptions"
+            class="btn btn-standard btn-padding"
+          >
+            Opciones
+          </button>
+          <button
             id="editScore"
             onclick="editScore()"
             class="btn btn-standard btn-padding"
           >
-            Edit
+            Editar
           </button>
           <button
             id="resetScore"
             onclick="reset()"
             class="btn btn-standard btn-padding"
           >
-            Reset
+            Reiniciar
           </button>
         </div>
         <div class="teamScorePoints">
@@ -308,7 +314,11 @@
           <button class="btn btn-standard">Fault</button>
         </div>
       </section>
-      <section id="playLog">Play Log</section>
+      <section id="playLog">Historial de Juego</section>
+      <div id="modal">
+        <div id="modalContent">Este es el modalContent</div>
+        <div id="closeModal" onclick="closeModal()" class="btn btn-standard">X</div>
+      </div>
       <script type="text/javascript" src="VolleyMark.js"></script>
     </main>
   </body>

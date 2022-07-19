@@ -2,7 +2,8 @@
     size: landscape;
 }
 :root{
-    --dark: #002; 
+    --dark: rgba(0, 0, 34, 0.86); 
+    --dark-full: #002; 
     --light: #dff;
     --neon1-full: rgba(255, 251, 5, 1);
     --neon1: rgba(255, 251, 5, 0.466);
@@ -19,7 +20,7 @@
 body{
     min-height: 100vh;
     min-width: 100vw;
-    background: var(--dark);
+    background: var(--dark-full);
     color: var(--light);
     font-family: Arial, Helvetica, sans-serif;
     overflow: hidden;
@@ -105,7 +106,7 @@ div.column{
     min-height: 30vh;
 }
 #score .scoreController .btn{
-    background-color: var(--dark);
+    background-color: var(--dark-full);
     border-top: 1px solid var(--neon3);
     border-right: 1px solid var(--neon3);
     font-size: 20px;
@@ -213,7 +214,53 @@ div.column{
 }
 #teamsManagement>.manageTeam>.teamPosition>.mallaA{left: 100%;}
 #teamsManagement>.manageTeam>.teamPosition>.mallaB{right: 100%;}
-
 #teamsManagement>.manageTeam>.timeOuts{
     height: 50%;
+}
+
+/*Modal*/
+#modal{
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    padding: 5vh;
+    background-color: var(--dark);
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+#modal>#modalContent{
+    position: relative;
+    background-color: var(--dark-full);
+    width: 80vw;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5%;
+    border-radius: 15px;
+    border: 1px solid var(--neon3-full);
+}
+#modalContent>form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+}
+#modalContent>form>label{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 5vh;
+    border-radius: 14px;
+    border: 1px solid var(--neon3);
+    cursor: pointer;
+}
+#modal>#closeModal{
+    position: absolute;
+    right: 5%;
+    top: 5%;
 }
