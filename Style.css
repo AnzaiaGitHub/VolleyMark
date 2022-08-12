@@ -11,6 +11,9 @@
     --neon2: rgba(255, 147, 5, 0.466);
     --neon3-full: rgba(5, 255, 234, 1);
     --neon3: rgba(5, 255, 234, 0.466);
+    --sm: 12px;
+    --md: 24px;
+    --lg: 40px;
 }
 *{
     margin: 0;
@@ -18,12 +21,12 @@
     box-sizing: border-box;
 }
 body{
-    min-height: 100vh;
+    height: 100%;
     min-width: 100vw;
     background: var(--dark-full);
     color: var(--light);
     font-family: Arial, Helvetica, sans-serif;
-    overflow: hidden;
+    overflow-y: scroll;
 }
 body section{
     width: 100%;
@@ -263,4 +266,40 @@ div.column{
     position: absolute;
     right: 5%;
     top: 5%;
+}
+
+@media (max-height:700px) {
+    #teamInfo{
+        height: 12vh;
+    }
+    #teamInfo>div{
+        height: 100%;
+        flex-direction: row-reverse;
+    }
+    #teamInfo .teamName{
+        font-size: var(--md);
+    }
+    #teamInfo .setsWon{
+        height: 70%;
+        font-size: var(--md);
+    }
+    #teamInfo .setTeamController{
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+    #teamInfo .setTeamController:last-child{
+        flex-direction: row-reverse;
+    }
+    #teamInfo >div .setTeamController .btn{
+        margin: 0 4px;
+        padding: 16px;
+        height: 40%;
+    }
+    #teamInfo #changeSide{
+        height: 100%;
+        font-size: var(--sm);
+    }
+    #score{
+        max-height: 10vh;
+    }
 }
