@@ -14,6 +14,7 @@
     --sm: 12px;
     --md: 24px;
     --lg: 40px;
+    --btn: #aaf;
 }
 *{
     margin: 0;
@@ -22,7 +23,7 @@
 }
 body{
     height: 100%;
-    min-width: 100vw;
+    width: 100%;
     background: var(--dark-full);
     color: var(--light);
     font-family: Arial, Helvetica, sans-serif;
@@ -34,7 +35,6 @@ body section{
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 10px;
 }
 body section div{
     display: flex;
@@ -44,7 +44,7 @@ body section div{
 }
 div.column{
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-evenly;
     margin: 0;
     height: 100%;
     /* background-color: #fff; */
@@ -75,38 +75,37 @@ div.column{
 }
 .btn-standard{
     padding: 8px;
-    background-color: #aaf;
+    background-color: var(--btn);
+    border: 0;
 }
 .btn-minimal{
     padding: 1px;
-    font-size: 1rem;
+    font-size: var(--md);
     border: 1px solid var(--neon3);
 }
 
 /*Specific styles*/
 /*Team Name, Sets Won*/
 #teamInfo>div{
-    max-width: 45vw;
-    width: 50%;
-    font-size: 1.5rem;
-    position: relative;
+    width: 45vw;
+    font-size: var(--md);
 }
 #teamInfo>div>.setsWon{
     background-color: #fff;
-    padding: 5px;
+    padding: 8px;
     color: var(--dark);
     font-weight: bold;
     border-radius: 3px;
 }
 .setTeamController{
-    position: relative;
+    height: 100%;
     padding: 0;
     text-align: center;
 }
 
 /*Set Score Points*/
 #score{
-    min-height: 30vh;
+    height: 30vh;
 }
 #score .scoreController .btn{
     background-color: var(--dark-full);
@@ -149,7 +148,7 @@ div.column{
     width: 50%;
     height: 100%;
     font-size: 5rem;
-    color: var(--dark);
+    color: var(--light);
     text-shadow: 0px 1px 6px var(--neon3-full);
     box-shadow: inset 0 0 16px var(--neon3);
     border: 1px solid var(--neon3-full);
@@ -159,18 +158,31 @@ div.column{
 
 /* Teams Section (rotation, timeout, faults)*/
 #teamsManagement{
-    height: 25vh;
+    height: 30vh;
     justify-content: space-evenly;
     padding: 10px;
 }
 #teamsManagement>.manageTeam{
-    width: 45%;
+    width: 48%;
+    height: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+#teamsManagement>.manageTeam>button{
+    padding: 8px 16px;
+    font-size: var(--sm);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#teamsManagement>.manageTeam>.timeOuts{
     height: 100%;
     justify-content: space-evenly;
 }
 #teamsManagement>.manageTeam .check{
-    width: 4vh;
-    height: 4vh;
+    width: 28px;
+    height: 28px;
     min-width: 25px;
     min-height: 25px;
 }
@@ -217,13 +229,36 @@ div.column{
 }
 #teamsManagement>.manageTeam>.teamPosition>.mallaA{left: 100%;}
 #teamsManagement>.manageTeam>.teamPosition>.mallaB{right: 100%;}
-#teamsManagement>.manageTeam>.timeOuts{
-    height: 50%;
+#teamsManagement .rotate-container{
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: var(--md);
+}
+#teamsManagement .rotate-container .rotation-controller{
+    padding: 0 8px;
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-evenly;
+}
+#teamsManagement .rotate-container .rotation-controller .rotate-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--md);
+    font-weight: bold;
+    padding: 4px;
+    margin: 0;
 }
 #playLog{
     display: flex;
     flex-direction: column;
     font-size: var(--sm);
+    padding: 8px;
 }
 #playLog h2{
     font-size: var(--sm);

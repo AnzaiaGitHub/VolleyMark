@@ -263,25 +263,27 @@ function setServiceTeam(team){
     renderGame();
 }
 
-function rotate(team){
+function rotate(team, orientation=1){
     let newTeamRotation=[];
-    if(team == "A"){
-        let lastTeamRotation = TeamA.TeamPosition;
+    let lastTeamRotation = team=="A"?TeamA.TeamPosition:TeamB.TeamPosition;
+    if(orientation==1){
         for(let i=0; i<6;i++){
             if(i<5)
                 newTeamRotation[i] = lastTeamRotation[i+1];
             else
                 newTeamRotation[i] = lastTeamRotation[0];
         }
+    }else{
+        for(let i=5; i>=0;i--){
+            if(i>0)
+                newTeamRotation[i] = lastTeamRotation[i-1];
+            else
+                newTeamRotation[i] = lastTeamRotation[5];
+        }
+    }
+    if(team == "A"){
         TeamA.TeamPosition = newTeamRotation;
     }else{
-        let lastTeamRotation = TeamB.TeamPosition;
-        for(let i=0; i<6;i++){
-            if(i<5)
-                newTeamRotation[i] = lastTeamRotation[i+1];
-            else
-                newTeamRotation[i] = lastTeamRotation[0];
-        }
         TeamB.TeamPosition = newTeamRotation;
     }
     renderGame();

@@ -13,14 +13,14 @@
         <div id="teamA">
           <p id="teamNameA" class="teamName">Team A</p>
           <div id="setScoreA" class="setsWon">0</div>
-          <div class="setTeamController column">
+          <div class="setTeamController">
             <div class="btn btn-minimal btn-padding" onclick="addSetWonTeam('A')">+</div>
             <div class="btn btn-minimal btn-padding" onclick="subtractSetWonTeam('A')">-</div>
           </div>
         </div>
         <button id="changeSide" class="btn btn-standard btn-padding" onclick="changeSide()">Cambiar Lados</button>
         <div id="teamB">
-          <div class="setTeamController column">
+          <div class="setTeamController">
             <div class="btn btn-minimal btn-padding" onclick="addSetWonTeam('B')">+</div>
             <div class="btn btn-minimal btn-padding" onclick="subtractSetWonTeam('B')">-</div>
           </div>
@@ -246,21 +246,27 @@
       </section>
       <section id="teamsManagement">
         <div class="manageTeam">
-          <button class="btn btn-standard">Fault</button>
           <div class="timeOuts column">
             <p alt="Time Out">To</p>
             <input
-              type="checkbox"
-              name="timeOut"
-              id="timeOutA1"
-              class="check"
+            type="checkbox"
+            name="timeOut"
+            id="timeOutA1"
+            class="check"
             />
             <input
-              type="checkbox"
-              name="timeOut"
-              id="timeOutA2"
-              class="check"
+            type="checkbox"
+            name="timeOut"
+            id="timeOutA2"
+            class="check"
             />
+          </div>
+          <div class="rotate-container">
+            <p class="rotate-p">Rotar</p>
+            <div class="rotation-controller">
+              <button class="rotate-btn btn btn-standard" onclick="rotate('A',1)">+</button>
+              <button class="rotate-btn btn btn-standard" onclick="rotate('A',-1)">-</button>
+            </div>
           </div>
           <div class="teamPosition">
             <div class="malla mallaA"></div>
@@ -276,7 +282,7 @@
             onclick="editPosition('A')"
             class="btn btn-standard"
           >
-            Edit
+            Editar
           </button>
         </div>
         <div class="manageTeam">
@@ -285,7 +291,7 @@
             onclick="editPosition('B')"
             class="btn btn-standard"
           >
-            Edit
+            Editar
           </button>
           <div class="teamPosition">
             <div class="malla mallaB"></div>
@@ -295,6 +301,13 @@
             <div class="position" id="B4">B4</div>
             <div class="position" id="B5">B5</div>
             <div class="position" id="B6">B6</div>
+          </div>
+          <div class="rotate-container">
+            <p class="rotate-p">Rotar</p>
+            <div class="rotation-controller">
+              <button class="rotate-btn btn btn-standard" onclick="rotate('B',-1)">-</button>
+              <button class="rotate-btn btn btn-standard" onclick="rotate('B',1)">+</button>
+            </div>
           </div>
           <div class="timeOuts column">
             <p alt="Time Out">To</p>
@@ -311,7 +324,7 @@
               class="check"
             />
           </div>
-          <button class="btn btn-standard">Fault</button>
+          
         </div>
       </section>
       <section id="playLog">
