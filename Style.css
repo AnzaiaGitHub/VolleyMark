@@ -83,6 +83,11 @@ div.column{
     font-size: var(--md);
     border: 1px solid var(--neon3);
 }
+.btn-secondary{
+    background-color: var(--dark-full);
+    border-style: dashed;
+    color: var(--light);
+}
 
 /*Specific styles*/
 /*Team Name, Sets Won*/
@@ -304,6 +309,11 @@ div.column{
     border-radius: 14px;
     border: 1px solid var(--neon3);
     cursor: pointer;
+}
+#modalContent>form>.form-end{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 }
 #modal>#closeModal{
     position: absolute;
