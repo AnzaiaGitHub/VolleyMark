@@ -1,6 +1,7 @@
 //Variables
 const Modal = document.getElementById("modal");
 const modalContent = document.getElementById("modalContent");
+let gameLog = [];
 let Game = null;
 let TeamA,TeamB, maxSetPoints;
 let RenderTeamA = {
@@ -98,7 +99,7 @@ document.getElementById("editOptions").addEventListener("click",()=>{
 
 //Functions
 function setGame(){
-    Game = [TeamA,TeamB];
+    Game = [TeamA,TeamB, maxSetPoints];
     localStorage.setItem("Game", JSON.stringify(Game));
 };
 
@@ -231,18 +232,37 @@ function resetScore(){
 }
 
 function reset(){
-    let opt = prompt("1.Reiniciar set, 2.Reiniciar todo el partido");
-    switch(opt){
-        case '1':
-            resetScore();
-        break;
-        case '2':
-            resetGame();
-        break;
-        default:
-            alert("Opcion invalida");
-        break;
-    }
+    Modal.style.display = "flex";
+    let re_Text = document.createElement("P");
+    re_Text.innerHTML = "¿Qué deseas reiniciar?";
+    re_Text.style.textAlign = "center";
+    re_Text.style.width = "100%";
+    let re_Set = document.createElement("button");
+    re_Set.innerHTML = "Score";
+    re_Set = setAttributes(re_Set,[
+        ["class","btn btn-standard btn-padding"],
+        ["onclick","resetScore()"]
+    ]);
+
+    let re_Game = document.createElement("button");
+    re_Game.innerHTML = "Game";
+    re_Game = setAttributes(re_Game,[
+        ["class","btn btn-standard btn-padding"],
+        ["onclick","resetGame()"]
+    ]);
+    let formEnd = document.createElement("div");
+    formEnd.classList.add("form-end");
+    formEnd = appendChilds(formEnd, [
+        re_Set,
+        re_Game
+    ]);
+
+    let form = document.createElement("form");
+    form = appendChilds(form,[
+        re_Text,
+        formEnd
+    ]);
+    setModalContent(form);
 }
 
 function changeSide(){
@@ -290,7 +310,7 @@ function rotate(team, orientation=1){
 }
 
 function editScore(){
-    let newScore = prompt("Escriba el puntaje de ambos equipos separados por -", "0-0");
+    let newScore = prompt("Escriba el puntaje de ambos equipos separados por -", `${TeamA.Score}-${TeamB.Score}`);
     if(newScore==null)
         return;
     if(isNaN(parseInt(newScore.split("-")[0]))){

@@ -310,9 +310,9 @@ div.column{
     border: 1px solid var(--neon3);
     cursor: pointer;
 }
-#modalContent>form>.form-end{
+#modalContent .form-end{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     width: 100%;
 }
 #modal>#closeModal{
