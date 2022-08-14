@@ -242,22 +242,31 @@ function renderLog(game){
             li.setAttribute("id",gameLog.indexOf(JSON.stringify(curLog)));
             li.classList.add("log");
 
-            let teamA_container = document.createElement("span");
-            let teamB_container = document.createElement("span");
+            let teamA_container = document.createElement("div");
+            teamA_container.classList.add("teamLog");
+            let teamB_container = document.createElement("div");
+            teamB_container.classList.add("teamLog");
 
-            let rotationA = document.createElement("span");
+            let timeOutsA = document.createElement("span");
+            timeOutsA.innerHTML = `T${curLog[0].TimeOuts}`;
+            let timeOutsB = document.createElement("span");
+            timeOutsB.innerHTML = `T${curLog[1].TimeOuts}`;
+
+            let rotationA = document.createElement("div");
             rotationA.innerHTML = curLog[0].TeamPosition;
-            let rotationB = document.createElement("span");
+            rotationA.classList.add("rotationLog");
+            let rotationB = document.createElement("div");
             rotationB.innerHTML = curLog[1].TeamPosition;
+            rotationB.classList.add("rotationLog");
 
             let nameA = document.createElement("span");
             nameA.innerHTML = curLog[0].Name;
             let nameB = document.createElement("span");
             nameB.innerHTML = curLog[1].Name;
             
-            let setsA = document.createElement("span");
+            let setsA = document.createElement("div");
             setsA.innerHTML = "("+curLog[0].SetsWon+")";
-            let setsB = document.createElement("span");
+            let setsB = document.createElement("div");
             setsB.innerHTML = "("+curLog[1].SetsWon+")";
 
             let scoreA = document.createElement("span");
@@ -266,9 +275,11 @@ function renderLog(game){
             scoreB.innerHTML = curLog[1].Score;
 
             let divisor = document.createElement("span");
+            divisor.classList.add("divisor");
             divisor.innerHTML = `${curLog[0].Service?"S":" "}-${curLog[1].Service?"S":" "}`;
 
             teamA_container = appendChilds(teamA_container, [
+                timeOutsA,
                 rotationA,
                 nameA,
                 setsA,
@@ -278,7 +289,8 @@ function renderLog(game){
                 scoreB,
                 setsB,
                 nameB,
-                rotationB
+                rotationB,
+                timeOutsB
             ]);
 
             let rollBack = document.createElement("button");
@@ -291,16 +303,23 @@ function renderLog(game){
             deleteLog.classList.add("btn","btn-standard", "btn-secondary");
             deleteLog.setAttribute("onclick",`deleteIndex_gameLog(${li.id})`);
 
-            li = appendChilds(li,[
+            let logInfo = document.createElement("span");
+            logInfo.classList.add("teamsLog");
+            logInfo = appendChilds(logInfo,[
                 teamA_container,
                 divisor,
                 teamB_container
             ]);
+            li.appendChild(logInfo);
+
+            let logController = document.createElement("span");
+
             if(li.id<log_data.length-1){
-                li = appendChilds(li,[
+                logController = appendChilds(logController,[
                     rollBack,
                     deleteLog
                 ]);
+                li.appendChild(logController);
             }
             gameLog_container.appendChild(li);
         });
