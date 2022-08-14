@@ -1,6 +1,7 @@
 //Variables
 const Modal = document.getElementById("modal");
 const modalContent = document.getElementById("modalContent");
+const gameLog_container = document.getElementById("gameLog");
 let gameLog = [];
 let Game = null;
 let TeamA,TeamB, maxSetPoints;
@@ -38,6 +39,9 @@ window.addEventListener('load', ()=>{
     let gm = localStorage.getItem("Game");
     if(gm!=null){
         loadGame(gm);
+        let gmLog = localStorage.getItem("gameLog");
+        if(gmLog)
+            gameLog = JSON.parse(gmLog);
     }else{
         resetGame();
     }
@@ -54,6 +58,8 @@ document.querySelectorAll(".position").forEach(element => {
                 TeamB.TeamPosition[parseInt(element.id[1])-1] = newPlayer;
             }
             renderGame();
+            renderLog(Game);
+
         // }else{
             // alert("Debe escribir el numero del jugador");
         // }
@@ -77,6 +83,7 @@ document.querySelectorAll(".check").forEach(element=>{
             }
         }
         renderGame();
+        renderLog(Game);
     });
 });
 document.querySelectorAll(".teamName").forEach(element=>{
@@ -89,6 +96,7 @@ document.querySelectorAll(".teamName").forEach(element=>{
                 TeamB.Name = newName;
             }
             renderGame();
+            renderLog(Game);
         }
     });
 });
@@ -98,11 +106,6 @@ document.getElementById("editOptions").addEventListener("click",()=>{
 });
 
 //Functions
-function setGame(){
-    Game = [TeamA,TeamB, maxSetPoints];
-    localStorage.setItem("Game", JSON.stringify(Game));
-};
-
 function resetGame(){
     localStorage.removeItem("Game");
     TeamA = {
@@ -128,6 +131,7 @@ function resetGame(){
         sets:5
     };
     renderGame();
+    gameLog=[];
 }
 
 function loadGame(gm){
@@ -136,6 +140,7 @@ function loadGame(gm){
     TeamB = Game[1];
     maxSetPoints = Game[2];
     renderGame();
+    renderLog(Game);
 }
 
 function addPointTeam(Team){
@@ -153,6 +158,7 @@ function addPointTeam(Team){
         }
     }
     renderGame();
+    renderLog(Game);
     winCondition();
 }
 
@@ -163,6 +169,7 @@ function subtractPointTeam(Team){
         TeamB.Score = TeamB.Score>0?TeamB.Score-1:0;
     }
     renderGame();
+    renderLog(Game);
 }
 
 function renderGame(){
@@ -223,6 +230,106 @@ function renderGame(){
     localStorage.setItem("Game", JSON.stringify(Game));
 }
 
+function renderLog(game){
+    gameLog.push(JSON.stringify(game));
+    logClean();
+    localStorage.setItem("gameLog",JSON.stringify(gameLog));
+    let log_data = gameLog.map((curLog)=>{
+        return JSON.parse(curLog);
+    });
+    gameLog_container.innerHTML="";
+    if(log_data.length){
+        log_data.forEach((curLog)=>{
+            let li = document.createElement("li");
+            li.setAttribute("id",log_data.indexOf(curLog));
+
+            let teamA_container = document.createElement("span");
+            let teamB_container = document.createElement("span");
+
+            let rotationA = document.createElement("span");
+            rotationA.innerHTML = curLog[0].TeamPosition;
+            let rotationB = document.createElement("span");
+            rotationB.innerHTML = curLog[1].TeamPosition;
+
+            let nameA = document.createElement("span");
+            nameA.innerHTML = curLog[0].Name;
+            let nameB = document.createElement("span");
+            nameB.innerHTML = curLog[1].Name;
+            
+            let setsA = document.createElement("span");
+            setsA.innerHTML = "("+curLog[0].SetsWon+")";
+            let setsB = document.createElement("span");
+            setsB.innerHTML = "("+curLog[1].SetsWon+")";
+
+            let scoreA = document.createElement("span");
+            scoreA.innerHTML = curLog[0].Score;
+            let scoreB = document.createElement("span");
+            scoreB.innerHTML = curLog[1].Score;
+
+            let divisor = document.createElement("span");
+            divisor.innerHTML = " - ";
+
+            teamA_container = appendChilds(teamA_container, [
+                rotationA,
+                nameA,
+                setsA,
+                scoreA
+            ]);
+            teamB_container = appendChilds(teamB_container, [
+                scoreB,
+                setsB,
+                nameB,
+                rotationB
+            ]);
+
+            li = appendChilds(li,[
+                teamA_container,
+                divisor,
+                teamB_container
+                // logController
+            ]);
+            gameLog_container.appendChild(li);
+        });
+    }
+}
+
+function logClean(){
+    let logCleaned =[];
+    
+}
+
+function deleteIndex(I,Arr){ //returns the new array
+    let new_Arr = Arr.map((e)=>{
+        return e;
+    });
+    if(I==0){
+        new_Arr.shift();
+    }else{
+        if(I==(Arr.length-1)){
+            new_Arr.pop();
+        }else{
+            new_Arr = Arr.slice(0,I).concat(Arr.slice(I+1));
+        }
+    }
+    return new_Arr;
+}
+
+function deleteRepeateds(Arr){
+    Arr.forEach((value)=>{
+        if(isRepeated(value,Arr)){
+            Arr = deleteIndex(Arr.indexOf(value),Arr);
+            Arr = deleteRepeateds(Arr);
+        }
+    });
+    return Arr;
+}
+
+function isRepeated(value,Arr){
+    return Arr.filter((val)=>{
+        return val == value;
+    }).length>1;
+}
+
 function resetScore(){
     TeamA.Score=0;
     TeamB.Score=0;
@@ -270,6 +377,7 @@ function changeSide(){
     TeamA = TeamB;
     TeamB = TeamAux;
     renderGame();
+    renderLog(Game);
 }
 
 function setServiceTeam(team){
@@ -281,6 +389,7 @@ function setServiceTeam(team){
         TeamB.Service=true;
     }
     renderGame();
+    renderLog(Game);
 }
 
 function rotate(team, orientation=1){
@@ -307,6 +416,7 @@ function rotate(team, orientation=1){
         TeamB.TeamPosition = newTeamRotation;
     }
     renderGame();
+    renderLog(Game);
 }
 
 function editScore(){
@@ -324,6 +434,7 @@ function editScore(){
         TeamB.Score=Math.abs(parseInt(newScore.split("-")[1]));
     }
     renderGame();
+    renderLog(Game);
 }
 
 function editPosition(team){
@@ -338,6 +449,7 @@ function editPosition(team){
     else
         TeamB.TeamPosition = newPosition;
     renderGame();
+    renderLog(Game);
 }
 
 function addSetWonTeam(team){
@@ -347,6 +459,7 @@ function addSetWonTeam(team){
         TeamB.SetsWon++;
     }
     renderGame();
+    renderLog(Game);
 }
 
 function subtractSetWonTeam(team){
@@ -358,6 +471,7 @@ function subtractSetWonTeam(team){
             TeamB.SetsWon--;
     }
     renderGame();
+    renderLog(Game);
 }
 
 function closeModal(){
@@ -456,16 +570,19 @@ function setAttributes(element,attributes){
     });
     return element;
 }
+
 function setModalContent(content){
     modalContent.innerHTML = "";
     modalContent.appendChild(content);
 }
+
 function appendChilds(element, childs){
     childs.forEach((child)=>{
         element.appendChild(child);
     });
     return element;
 }
+
 function winCondition(){
     if(maxSetPoints.firstReachMax){
         if(TeamA.Score==maxSetPoints.Points || TeamB.Score==maxSetPoints.Points){
