@@ -39,9 +39,8 @@ window.addEventListener('load', ()=>{
     let gm = localStorage.getItem("Game");
     if(gm!=null){
         loadGame(gm);
-        let gmLog = localStorage.getItem("gameLog");
-        if(gmLog)
-            gameLog = JSON.parse(gmLog);
+        gameLog = JSON.parse(localStorage.getItem("gameLog"));
+        renderLog(Game);
     }else{
         resetGame();
     }
@@ -140,7 +139,6 @@ function loadGame(gm){
     TeamB = Game[1];
     maxSetPoints = Game[2];
     renderGame();
-    renderLog(Game);
 }
 
 function addPointTeam(Team){
@@ -236,12 +234,13 @@ function renderLog(game){
     localStorage.setItem("gameLog",JSON.stringify(gameLog));
     let log_data = gameLog.map((curLog)=>{
         return JSON.parse(curLog);
-    });
+    }).reverse();
     gameLog_container.innerHTML="";
     if(log_data.length){
         log_data.forEach((curLog)=>{
             let li = document.createElement("li");
-            li.setAttribute("id",log_data.indexOf(curLog));
+            li.setAttribute("id",gameLog.indexOf(JSON.stringify(curLog)));
+            li.classList.add("log");
 
             let teamA_container = document.createElement("span");
             let teamB_container = document.createElement("span");
@@ -267,7 +266,7 @@ function renderLog(game){
             scoreB.innerHTML = curLog[1].Score;
 
             let divisor = document.createElement("span");
-            divisor.innerHTML = " - ";
+            divisor.innerHTML = `${curLog[0].Service?"S":" "}-${curLog[1].Service?"S":" "}`;
 
             teamA_container = appendChilds(teamA_container, [
                 rotationA,
@@ -282,20 +281,48 @@ function renderLog(game){
                 rotationB
             ]);
 
+            let rollBack = document.createElement("button");
+            rollBack.innerHTML="Volver";
+            rollBack.classList.add("btn","btn-standard");
+            rollBack.setAttribute("onclick",`rollBack(${li.id})`);
+
+            let deleteLog = document.createElement("button");
+            deleteLog.innerHTML="Borrar";
+            deleteLog.classList.add("btn","btn-standard", "btn-secondary");
+            deleteLog.setAttribute("onclick",`deleteIndex_gameLog(${li.id})`);
+
             li = appendChilds(li,[
                 teamA_container,
                 divisor,
                 teamB_container
-                // logController
             ]);
+            if(li.id<log_data.length-1){
+                li = appendChilds(li,[
+                    rollBack,
+                    deleteLog
+                ]);
+            }
             gameLog_container.appendChild(li);
         });
     }
 }
 
 function logClean(){
-    let logCleaned =[];
-    
+    gameLog = deleteRepeateds(gameLog);
+}
+
+function rollBack(index){
+    let newLog = gameLog.slice(0,index+1);
+    loadGame(newLog[newLog.length-1]);
+    gameLog = newLog;
+    renderLog(Game);
+}
+
+function deleteIndex_gameLog(index){
+    gameLog = deleteIndex(index,gameLog);
+    if(gameLog.length==1)
+        gameLog=[];
+    renderLog(Game);
 }
 
 function deleteIndex(I,Arr){ //returns the new array

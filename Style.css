@@ -85,7 +85,7 @@ div.column{
 }
 .btn-secondary{
     background-color: var(--dark-full);
-    border-style: dashed;
+    border:2px dashed var(--light);
     color: var(--light);
 }
 
