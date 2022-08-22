@@ -131,6 +131,7 @@ function resetGame(){
     };
     renderGame();
     gameLog=[];
+    renderLog(Game);
 }
 
 function loadGame(gm){
@@ -139,6 +140,7 @@ function loadGame(gm){
     TeamB = Game[1];
     maxSetPoints = Game[2];
     renderGame();
+    renderLog(Game);
 }
 
 function addPointTeam(Team){
