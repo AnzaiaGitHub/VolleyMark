@@ -465,7 +465,8 @@ function editScore(){
 }
 
 function editPosition(team){
-    let newPositionStr = prompt("Escriba la formación de 1 a 6 separado por comas", "1,2,3,4,5,6");
+    let P = team=="A"?TeamA.TeamPosition:TeamB.TeamPosition;
+    let newPositionStr = prompt("Escriba la formación de 1 a 6 separado por comas", `${P[0]},${P[1]},${P[2]},${P[3]},${P[4]},${P[5]}`);
     if(newPositionStr == null)
         return;
     if(newPositionStr.split(",").length!=6)
