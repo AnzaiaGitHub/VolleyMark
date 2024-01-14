@@ -45,6 +45,7 @@ window.addEventListener('load', ()=>{
         resetGame();
     }
 });
+//write the player number on position n
 document.querySelectorAll(".position").forEach(element => {
     element.addEventListener('click',()=>{
         let newPlayer = prompt(`Escriba el numero del jugador en posicion ${parseInt(element.id[1])}`);
@@ -64,6 +65,7 @@ document.querySelectorAll(".position").forEach(element => {
         // }
     });
 });
+//timeOut checkbox listeners
 document.querySelectorAll(".check").forEach(element=>{
     element.addEventListener('click',()=>{
         if(element.checked){
@@ -85,6 +87,7 @@ document.querySelectorAll(".check").forEach(element=>{
         renderLog(Game);
     });
 });
+//team onClick change name
 document.querySelectorAll(".teamName").forEach(element=>{
     element.addEventListener('click', ()=>{
         let newName = prompt("Escriba el nombre del equipo");
@@ -99,6 +102,7 @@ document.querySelectorAll(".teamName").forEach(element=>{
         }
     });
 });
+//options modal display listener
 document.getElementById("editOptions").addEventListener("click",()=>{
     Modal.style.display = "flex";
     editOptions();
@@ -143,6 +147,9 @@ function loadGame(gm){
     renderLog(Game);
 }
 
+function create(elementType) {
+    return document.createElement(elementType);
+}
 function addPointTeam(Team){
     if(Team=="A"){
         TeamA.Score++;
@@ -240,43 +247,43 @@ function renderLog(game){
     gameLog_container.innerHTML="";
     if(log_data.length){
         log_data.forEach((curLog)=>{
-            let li = document.createElement("li");
+            let li = create("li");
             li.setAttribute("id",gameLog.indexOf(JSON.stringify(curLog)));
             li.classList.add("log");
 
-            let teamA_container = document.createElement("div");
+            let teamA_container = create("div");
             teamA_container.classList.add("teamLog");
-            let teamB_container = document.createElement("div");
+            let teamB_container = create("div");
             teamB_container.classList.add("teamLog");
 
-            let timeOutsA = document.createElement("span");
+            let timeOutsA = create("span");
             timeOutsA.innerHTML = `T${curLog[0].TimeOuts}`;
-            let timeOutsB = document.createElement("span");
+            let timeOutsB = create("span");
             timeOutsB.innerHTML = `T${curLog[1].TimeOuts}`;
 
-            let rotationA = document.createElement("div");
+            let rotationA = create("div");
             rotationA.innerHTML = curLog[0].TeamPosition;
             rotationA.classList.add("rotationLog");
-            let rotationB = document.createElement("div");
+            let rotationB = create("div");
             rotationB.innerHTML = curLog[1].TeamPosition;
             rotationB.classList.add("rotationLog");
 
-            let nameA = document.createElement("span");
+            let nameA = create("span");
             nameA.innerHTML = curLog[0].Name;
-            let nameB = document.createElement("span");
+            let nameB = create("span");
             nameB.innerHTML = curLog[1].Name;
             
-            let setsA = document.createElement("div");
+            let setsA = create("div");
             setsA.innerHTML = "("+curLog[0].SetsWon+")";
-            let setsB = document.createElement("div");
+            let setsB = create("div");
             setsB.innerHTML = "("+curLog[1].SetsWon+")";
 
-            let scoreA = document.createElement("span");
+            let scoreA = create("span");
             scoreA.innerHTML = curLog[0].Score;
-            let scoreB = document.createElement("span");
+            let scoreB = create("span");
             scoreB.innerHTML = curLog[1].Score;
 
-            let divisor = document.createElement("span");
+            let divisor = create("span");
             divisor.classList.add("divisor");
             divisor.innerHTML = `${curLog[0].Service?"S":" "}-${curLog[1].Service?"S":" "}`;
 
@@ -295,17 +302,17 @@ function renderLog(game){
                 timeOutsB
             ]);
 
-            let rollBack = document.createElement("button");
+            let rollBack = create("button");
             rollBack.innerHTML="Volver";
             rollBack.classList.add("btn","btn-standard");
             rollBack.setAttribute("onclick",`rollBack(${li.id})`);
 
-            let deleteLog = document.createElement("button");
+            let deleteLog = create("button");
             deleteLog.innerHTML="Borrar";
             deleteLog.classList.add("btn","btn-standard", "btn-secondary");
             deleteLog.setAttribute("onclick",`deleteIndex_gameLog(${li.id})`);
 
-            let logInfo = document.createElement("span");
+            let logInfo = create("span");
             logInfo.classList.add("teamsLog");
             logInfo = appendChilds(logInfo,[
                 teamA_container,
@@ -314,7 +321,7 @@ function renderLog(game){
             ]);
             li.appendChild(logInfo);
 
-            let logController = document.createElement("span");
+            let logController = create("span");
 
             if(li.id<log_data.length-1){
                 logController = appendChilds(logController,[
@@ -388,31 +395,31 @@ function resetScore(){
 
 function reset(){
     Modal.style.display = "flex";
-    let re_Text = document.createElement("P");
+    let re_Text = create("P");
     re_Text.innerHTML = "¿Qué deseas reiniciar?";
     re_Text.style.textAlign = "center";
     re_Text.style.width = "100%";
-    let re_Set = document.createElement("button");
+    let re_Set = create("button");
     re_Set.innerHTML = "Score";
     re_Set = setAttributes(re_Set,[
         ["class","btn btn-standard btn-padding"],
         ["onclick","resetScore()"]
     ]);
 
-    let re_Game = document.createElement("button");
+    let re_Game = create("button");
     re_Game.innerHTML = "Game";
     re_Game = setAttributes(re_Game,[
         ["class","btn btn-standard btn-padding"],
         ["onclick","resetGame()"]
     ]);
-    let formEnd = document.createElement("div");
+    let formEnd = create("div");
     formEnd.classList.add("form-end");
     formEnd = appendChilds(formEnd, [
         re_Set,
         re_Game
     ]);
 
-    let form = document.createElement("form");
+    let form = create("form");
     form = appendChilds(form,[
         re_Text,
         formEnd
@@ -429,20 +436,16 @@ function changeSide(){
 }
 
 function setServiceTeam(team){
-    if(team == "A"){
-        TeamB.Service=false;
-        TeamA.Service=true;
-    }else{
-        TeamA.Service=false;
-        TeamB.Service=true;
-    }
+    TeamB.Service = (team == "B");
+    TeamA.Service = (team == "A");
     renderGame();
-    renderLog(Game);
 }
 
 function rotate(team, orientation=1){
     let newTeamRotation=[];
-    let lastTeamRotation = team=="A"?TeamA.TeamPosition:TeamB.TeamPosition;
+    let lastTeamRotation = team=="A"
+        ? TeamA.TeamPosition
+        : TeamB.TeamPosition;
     if(orientation==1){
         for(let i=0; i<6;i++){
             if(i<5)
@@ -464,7 +467,6 @@ function rotate(team, orientation=1){
         TeamB.TeamPosition = newTeamRotation;
     }
     renderGame();
-    renderLog(Game);
 }
 
 function editScore(){
@@ -528,8 +530,19 @@ function closeModal(){
     modalContent.innerHTML = "";
 }
 
+function saveOptions(maxPoints_input, pDiff_input, gPoint_input){
+    maxSetPoints.Points = isNaN(parseInt(maxPoints_input.value))
+        ? maxSetPoints.Points
+        : parseInt(maxPoints_input.value);
+    maxSetPoints.diffPoints = pDiff_input.checked;
+    maxSetPoints.firstReachMax = gPoint_input.checked;
+    closeModal();
+    renderGame();
+}
+
 function editOptions(){
-    let maxPoints_input = document.createElement("input");
+    // win condition - number of points to win
+    let maxPoints_input = create("input");
     maxPoints_input = setAttributes(maxPoints_input,[
         ["id","maxPoints"],
         ["type","text"],
@@ -537,29 +550,39 @@ function editOptions(){
         ["value",maxSetPoints.Points]
     ]);
 
-    let maxPoints_label = document.createElement("label");
+    let maxPoints_label = create("label");
     maxPoints_label.innerHTML = "Puntos máximos por Set";
     maxPoints_label.appendChild(maxPoints_input);
     maxPoints_label = setAttributes(maxPoints_label,[["for",maxPoints_input.id]]);
 
-    let pDiff_input = document.createElement("input");
+    // win condition - difference of 2 points
+    let pDiff_input = create("input");
     pDiff_input = setAttributes(pDiff_input,[
         ["id","pointsDiff"],
         ["type","radio"],
         ["name","winCondition"]
     ]);
-    let pDiff_label = document.createElement("label");
+    if(maxSetPoints.diffPoints){
+        pDiff_input.setAttribute("checked",true);
+    }
+
+    let pDiff_label = create("label");
     pDiff_label.innerHTML = "Gana por diferencia de 2 puntos";
     pDiff_label.appendChild(pDiff_input);
     pDiff_label = setAttributes(pDiff_label,[["for",pDiff_input.id]]);
 
-    let gPoint_input = document.createElement("input");
+    // win condition - first on reach the max points win
+    let gPoint_input = create("input");
     gPoint_input = setAttributes(gPoint_input,[
         ["id","goldenPoint"],
         ["type","radio"],
         ["name","winCondition"]
     ]);
-    let gPoint_label = document.createElement("label");
+    if(maxSetPoints.firstReachMax){
+        gPoint_input.setAttribute("checked",true);
+    }
+
+    let gPoint_label = create("label");
     gPoint_label.innerHTML = `Gana el primero con ${maxSetPoints.Points} puntos`;
     gPoint_label.appendChild(gPoint_input);
     gPoint_label = setAttributes(gPoint_label,[
@@ -567,16 +590,16 @@ function editOptions(){
         ["id","goldenPoint_label"],
     ]);
 
-    let formEnd = document.createElement("div");
+    let formEnd = create("div");
     formEnd.classList.add("form-end");
-    let cancelButton = document.createElement("button");
+    let cancelButton = create("button");
     cancelButton.innerHTML = "Cancelar";
     cancelButton = setAttributes(cancelButton,[
         ["class","btn btn-padding btn-secondary"],
         ["onclick","closeModal()"]
     ]);
 
-    let saveButton = document.createElement("button");
+    let saveButton = create("button");
     saveButton.innerHTML = "Guardar";
     saveButton = setAttributes(saveButton,[
         ["id","saveInfo"],
@@ -587,23 +610,15 @@ function editOptions(){
         gPoint_label.innerHTML=`Gana el primero con ${maxPoints_input.value} puntos`;
         gPoint_label.appendChild(gPoint_input);
     });
-    if(maxSetPoints.diffPoints)
-        pDiff_input.setAttribute("checked",true);
-    else
-        gPoint_input.setAttribute("checked",true);
 
     saveButton.addEventListener("click",()=>{
-        maxSetPoints.Points=isNaN(parseInt(maxPoints_input.value))?maxSetPoints.Points:parseInt(maxPoints_input.value);
-        maxSetPoints.diffPoints = pDiff_input.checked;
-        maxSetPoints.firstReachMax = gPoint_input.checked;
-        closeModal();
-        renderGame();
+        saveOptions(maxPoints_input, pDiff_input, gPoint_input);
     });
 
     formEnd.appendChild(cancelButton);
     formEnd.appendChild(saveButton);
 
-    let form = document.createElement("form");
+    let form = create("form");
     form = appendChilds(form,[
         maxPoints_label,
         pDiff_label,
