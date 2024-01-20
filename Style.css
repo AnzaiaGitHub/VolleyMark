@@ -260,7 +260,8 @@ div.column{
     margin: 0;
 }
 #playLog{
-    display: flex;
+    /*display: flex; ToDo: organize the view to avoid scrolling*/
+    display:none;
     flex-direction: column;
     font-size: var(--sm);
     padding: 8px;
