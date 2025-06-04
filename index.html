@@ -4,50 +4,50 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="Style.css" />
+    <link rel="stylesheet" href="Styles/Style.css" />
     <title>Volleyball Score</title>
   </head>
   <body>
     <main id="mainContent">
       <section id="teamInfo">
-        <div id="teamA">
-          <p id="teamNameA" class="teamName">Team A</p>
-          <div id="setScoreA" class="setsWon">0</div>
+        <div id="teamLEFT">
+          <p id="teamNameLEFT" class="teamName">Team A</p>
+          <div id="setScoreLEFT" class="setsWon">0</div>
           <div class="setTeamController">
-            <div class="btn btn-minimal btn-padding" onclick="addSetWonTeam('A')">+</div>
-            <div class="btn btn-minimal btn-padding" onclick="subtractSetWonTeam('A')">-</div>
+            <div class="btn btn-minimal btn-padding" onclick="addSetWonTeam('LEFT')">+</div>
+            <div class="btn btn-minimal btn-padding" onclick="subtractSetWonTeam('LEFT')">-</div>
           </div>
         </div>
         <button id="changeSide" class="btn btn-standard btn-padding" onclick="changeSide()">Cambiar Lados</button>
-        <div id="teamB">
+        <div id="teamRIGHT">
           <div class="setTeamController">
-            <div class="btn btn-minimal btn-padding" onclick="addSetWonTeam('B')">+</div>
-            <div class="btn btn-minimal btn-padding" onclick="subtractSetWonTeam('B')">-</div>
+            <div class="btn btn-minimal btn-padding" onclick="addSetWonTeam('RIGHT')">+</div>
+            <div class="btn btn-minimal btn-padding" onclick="subtractSetWonTeam('RIGHT')">-</div>
           </div>
-          <div id="setScoreB" class="setsWon">1</div>
-          <p id="teamNameB" class="teamName">Team B</p>
+          <div id="setScoreRIGHT" class="setsWon">1</div>
+          <p id="teamNameRIGHT" class="teamName">Team B</p>
         </div>
       </section>
       <section id="score">
         <div class="teamScorePoints">
           <div class="scoreController column">
             <button
-              id="addPointA"
-              onclick="addPointTeam('A')"
+              id="addPointLEFT"
+              onclick="addPointTeam('LEFT')"
               class="btn btn-padding"
             >
               +
             </button>
             <button
-              id="subtractPointA"
-              onclick="subtractPointTeam('A')"
+              id="subtractPointLEFT"
+              onclick="subtractPointTeam('LEFT')"
               class="btn"
             >
               -
             </button>
           </div>
-          <div id="scoreMarkA" class="scoreMark">0</div>
-          <div id="serviceA" class="serviceContainer" onclick="setServiceTeam('A')">
+          <div id="scoreMarkLEFT" class="scoreMark">0</div>
+          <div id="serviceLEFT" class="serviceContainer" onclick="setServiceTeam('LEFT')">
             <p>Saque</p>
             <svg
               version="1.1"
@@ -148,7 +148,7 @@
           </button>
         </div>
         <div class="teamScorePoints">
-            <div id="serviceB" class="serviceContainer" onclick="setServiceTeam('B')">
+            <div id="serviceRIGHT" class="serviceContainer" onclick="setServiceTeam('RIGHT')">
                 <p>Saque</p>
                 <svg
                   version="1.1"
@@ -225,18 +225,18 @@
                   </g>
                 </svg>
               </div>
-          <div id="scoreMarkB" class="scoreMark">0</div>
+          <div id="scoreMarkRIGHT" class="scoreMark">0</div>
           <div class="scoreController column">
             <button
-              id="addPointB"
-              onclick="addPointTeam('B')"
+              id="addPointRIGHT"
+              onclick="addPointTeam('RIGHT')"
               class="btn btn-padding"
             >
               +
             </button>
             <button
-              id="subtractPointB"
-              onclick="subtractPointTeam('B')"
+              id="subtractPointRIGHT"
+              onclick="subtractPointTeam('RIGHT')"
               class="btn"
             >
               -
@@ -251,35 +251,35 @@
             <input
             type="checkbox"
             name="timeOut"
-            id="timeOutA1"
+            id="timeOut1LEFT"
             class="check"
             />
             <input
             type="checkbox"
             name="timeOut"
-            id="timeOutA2"
+            id="timeOut2LEFT"
             class="check"
             />
           </div>
           <div class="rotate-container">
             <p class="rotate-p">Rotar</p>
             <div class="rotation-controller">
-              <button class="rotate-btn btn btn-standard" onclick="rotate('A',1)">+</button>
-              <button class="rotate-btn btn btn-standard" onclick="rotate('A',-1)">-</button>
+              <button class="rotate-btn btn btn-standard" onclick="rotate('LEFT',1)">+</button>
+              <button class="rotate-btn btn btn-standard" onclick="rotate('LEFT',-1)">-</button>
             </div>
           </div>
           <div class="teamPosition">
-            <div class="malla mallaA"></div>
-            <div class="position" id="A1">A1</div>
-            <div class="position" id="A2">A2</div>
-            <div class="position" id="A3">A3</div>
-            <div class="position" id="A4">A4</div>
-            <div class="position" id="A5">A5</div>
-            <div class="position" id="A6">A6</div>
+            <div class="malla mallaLEFT"></div>
+            <div class="position" id="1LEFT">A1</div>
+            <div class="position" id="2LEFT">A2</div>
+            <div class="position" id="3LEFT">A3</div>
+            <div class="position" id="4LEFT">A4</div>
+            <div class="position" id="5LEFT">A5</div>
+            <div class="position" id="6LEFT">A6</div>
           </div>
           <button
-            id="editPositionA"
-            onclick="editPosition('A')"
+            id="editPositionLEFT"
+            onclick="editPosition('LEFT')"
             class="btn btn-standard"
           >
             Editar
@@ -287,26 +287,26 @@
         </div>
         <div class="manageTeam">
           <button
-            id="editPositionB"
-            onclick="editPosition('B')"
+            id="editPositionRIGHT"
+            onclick="editPosition('RIGHT')"
             class="btn btn-standard"
           >
             Editar
           </button>
           <div class="teamPosition">
-            <div class="malla mallaB"></div>
-            <div class="position" id="B1">B1</div>
-            <div class="position" id="B2">B2</div>
-            <div class="position" id="B3">B3</div>
-            <div class="position" id="B4">B4</div>
-            <div class="position" id="B5">B5</div>
-            <div class="position" id="B6">B6</div>
+            <div class="malla mallaRIGHT"></div>
+            <div class="position" id="1RIGHT">B1</div>
+            <div class="position" id="2RIGHT">B2</div>
+            <div class="position" id="3RIGHT">B3</div>
+            <div class="position" id="4RIGHT">B4</div>
+            <div class="position" id="5RIGHT">B5</div>
+            <div class="position" id="6RIGHT">B6</div>
           </div>
           <div class="rotate-container">
             <p class="rotate-p">Rotar</p>
             <div class="rotation-controller">
-              <button class="rotate-btn btn btn-standard" onclick="rotate('B',-1)">-</button>
-              <button class="rotate-btn btn btn-standard" onclick="rotate('B',1)">+</button>
+              <button class="rotate-btn btn btn-standard" onclick="rotate('RIGHT',-1)">-</button>
+              <button class="rotate-btn btn btn-standard" onclick="rotate('RIGHT',1)">+</button>
             </div>
           </div>
           <div class="timeOuts column">
@@ -314,13 +314,13 @@
             <input
               type="checkbox"
               name="timeOut"
-              id="timeOutB1"
+              id="timeOut1RIGHT"
               class="check"
             />
             <input
               type="checkbox"
               name="timeOut"
-              id="timeOutB2"
+              id="timeOut2RIGHT"
               class="check"
             />
           </div>
@@ -336,7 +336,7 @@
         <div id="modalContent">Este es el modalContent</div>
         <div id="closeModal" onclick="closeModal()" class="btn btn-standard">X</div>
       </div>
-      <script type="text/javascript" src="VolleyMark.js"></script>
+      <script type="text/javascript" src="/Scripts/VolleyMark.js"></script>
     </main>
   </body>
 </html>

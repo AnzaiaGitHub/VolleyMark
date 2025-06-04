@@ -36,15 +36,17 @@ let RenderTeamB = {
 
 //Listeners
 window.addEventListener('load', ()=>{
-    let gm = localStorage.getItem("Game");
-    if(gm!=null){
-        loadGame(gm);
-        gameLog = JSON.parse(localStorage.getItem("gameLog"));
-        renderLog(Game);
-    }else{
-        resetGame();
-    }
+    start();
 });
+
+function start() {
+    let storedGame = getStoredGame();
+    if(storedGame != null){
+        loadGame(storedGame);
+    }else{
+        startNewGame();
+    }
+}
 //write the player number on position n
 document.querySelectorAll(".position").forEach(element => {
     element.addEventListener('click',()=>{
@@ -109,8 +111,8 @@ document.getElementById("editOptions").addEventListener("click",()=>{
 });
 
 //Functions
-function resetGame(){
-    localStorage.removeItem("Game");
+function startNewGame(){
+    localStorage.removeItem("VolleyMarkGame");
     TeamA = {
         Name: "Team A",
         SetsWon: 0,
@@ -410,7 +412,7 @@ function reset(){
     re_Game.innerHTML = "Game";
     re_Game = setAttributes(re_Game,[
         ["class","btn btn-standard btn-padding"],
-        ["onclick","resetGame()"]
+        ["onclick","startNewGame()"]
     ]);
     let formEnd = create("div");
     formEnd.classList.add("form-end");
