@@ -1,0 +1,98 @@
+@page{
+    size: landscape;
+}
+:root{
+    --dark: rgba(0, 0, 34, 0.86); 
+    --dark-full: #002; 
+    --light: #dff;
+    --neon1-full: rgba(255, 251, 5, 1);
+    --neon1: rgba(255, 251, 5, 0.466);
+    --neon2-full: rgba(255, 147, 5, 1);
+    --neon2: rgba(255, 147, 5, 0.466);
+    --neon3-full: rgba(5, 255, 234, 1);
+    --neon3: rgba(5, 255, 234, 0.466);
+    --sm: 12px;
+    --md: 24px;
+    --lg: 40px;
+    --btn: #aaf;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    height: 100%;
+    width: 100%;
+    background: var(--dark-full);
+    color: var(--light);
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-y: scroll;
+}
+
+
+.volley-mark {
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.team-side {
+  width: 40%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
+.name-set-row {
+  width: 100%;
+  height: 15vh;
+  padding: 0 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.team-set-controller {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  height: 100%;
+}
+.reverse > .team-set-controller {
+  flex-direction: row-reverse;
+}
+.sets-won-card {
+  height: 100%;
+  width: 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--neon2-full);
+  text-align: center;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sets-team-handler {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sets-btn {
+  padding: 0 0.2rem;
+  border-radius: 0.4rem;
+  border: 1px solid var(--neon3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.reverse {
+  flex-direction: row-reverse;
+}
