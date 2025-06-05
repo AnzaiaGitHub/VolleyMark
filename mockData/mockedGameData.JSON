@@ -1,0 +1,26 @@
+{
+  "teamsData": {
+    "LEFT": {
+      "name": "tina",
+      "setsWon": 0,
+      "score": 16,
+      "positions":["11","22","73","14","5","96"],
+      "usedTimeOuts": 0,
+      "hasService": true
+    },
+    "RIGHT": {
+      "name": "tilin",
+      "setsWon": 0,
+      "score": 5,
+      "positions":["21","12","83","74","45","36"],
+      "usedTimeOuts": 1,
+      "hasService": false
+    }
+  },
+  "setsNumber": 5,
+  "setPoints": 25,
+  "winConditions": {
+    "diffPoints":true,
+    "firstWithSetPoints":false
+  }
+}

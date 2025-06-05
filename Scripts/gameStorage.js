@@ -1,52 +1,37 @@
 const localStorageKey = "VolleyMarkScore"
-var gameData = {
-  teamsData: {
-    LEFT: {
-      name: "Team A",
-      setsWon: 0,
-      score: 0,
-      positions:["A1","A2","A3","A4","A5","A6"],
-      usedTimeOuts: 0,
-      hasService: true
-    },
-    RIGHT: {
-      name: "Team B",
-      setsWon: 0,
-      score: 0,
-      positions:["B1","B2","B3","B4","B5","B6"],
-      usedTimeOuts: 0,
-      hasService: false
-    }
-  },
-  setsNumber: 5,
-  setPoints: 25,
-  winConditions: {
-    diffPoints:true,
-    firstWithSetPoints:false,
-  }
-};
+var GAME_DATA;
 
 function getStoredGame() {
+  console.log('getStoredGame');
+  
   return localStorage.getItem(localStorageKey);
 }
 
 function loadGame(gameInput) {
+  console.log('loadGame');
+  
   try {
     validateGameInput(gameInput);
     setGameData(gameInput);
   } catch(error) {
     console.log('An error occurred trying to load the existing game');
     console.error (error, gameInput);
+    startNewGame();
   }
 }
 
 function saveGame() {
-  const gameValue = JSON.stringify(gameData);
+  console.log('saveGame');
+  
+  const gameValue = JSON.stringify(GAME_DATA);
 
   localStorage.setItem(localStorageKey, gameValue);
 }
 
 function setGameData(gameInput) {
+  console.log('setGame');
+  GAME_DATA = {...gameInput};
+  console.log(GAME_DATA);
 }
 
 function validateGameInput(gameInput) {
@@ -93,24 +78,40 @@ function validateTeamData(teamInput) {
 }
 
 function validateGameData(gameInput) {
-  if(typeof gameInput.setsNumber != typeof gameData.setsNumber) {
+  if(typeof gameInput.setsNumber != typeof GAME_DATA.setsNumber) {
     throw Error('Invalid sets Number type for game');
   }
 
-  if(typeof gameInput.setPoints != typeof gameData.setPoints) {
+  if(typeof gameInput.setPoints != typeof GAME_DATA.setPoints) {
     throw Error('Invalid set points type for game');
   }
 
-  if(typeof gameInput.winConditions != typeof gameData.winConditions) {
+  if(typeof gameInput.winConditions != typeof GAME_DATA.winConditions) {
     throw Error('Invalid winConditions type for game');
   }
 
   const winConInput = gameInput.winConditions;
-  const winConExisting = {...gameData.winConditions};
+  const winConExisting = {...GAME_DATA.winConditions};
   if(typeof winConInput.diffPoints != typeof winConExisting.diffPoints) {
     throw Error('Invalid different points type for Game winConditions');
   }
   if(typeof winConInput.firstWithSetPoints != typeof winConExisting.firstWithSetPoints) {
     throw Error('Invalid first with setPoints type for Game winConditions');
   }
+}
+
+function startNewGame() {
+  fetch('../mockData/mockedGameData.JSON')
+     .then(response => {
+       if (!response.ok) {
+         throw new Error(`HTTP error! Status: ${response.status}`);
+       }
+       return response.json();
+     })
+     .then(data => {
+       setGameData(data);
+     })
+     .catch(error => {
+       console.error('Error fetching or parsing JSON:', error);
+     });
 }

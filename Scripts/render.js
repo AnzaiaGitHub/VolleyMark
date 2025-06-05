@@ -51,22 +51,23 @@ function renderTeam(teamToRender) {
 function renderName(teamToRender) {
   const selector = teamRenderSelectors.name + teamToRender;
   const element = getElementBySelector(selector);
+  console.log(GAME_DATA);
 
-  element.innerHTML = teamsData[teamToRender].name;
+  element.innerHTML = GAME_DATA.teamsData[teamToRender].name;
 }
 
 function renderSetsWon(teamToRender) {
   const selector = teamRenderSelectors.setsWon + teamToRender;
   const element = getElementBySelector(selector);
 
-  element.innerHTML = teamsData[teamToRender].setsWon;
+  element.innerHTML = GAME_DATA.teamsData[teamToRender].setsWon;
 }
 
 function renderCurrentScore(teamToRender) {
   const selector = teamRenderSelectors.score + teamToRender;
   const element = getElementBySelector(selector);
 
-  element.innerHTML = teamsData[teamToRender].score;
+  element.innerHTML = GAME_DATA.teamsData[teamToRender].score;
 }
 
 function renderTeamPosition(teamToRender) {
@@ -75,7 +76,7 @@ function renderTeamPosition(teamToRender) {
   const elements = selectors.map((selector) => getElementBySelector(selector));
 
   elements.forEach((index, element) => {
-    element.innerHTML = teamsData[teamToRender].positions[index];
+    element.innerHTML = GAME_DATA.teamsData[teamToRender].positions[index];
   });
 }
 
@@ -84,7 +85,7 @@ function renderTimeOuts(teamToRender) {
 
   const elements = selectors.map((selector) => getElementBySelector(selector));
 
-  const teamTimeOuts = teamsData[teamToRender].usedTimeOuts;
+  const teamTimeOuts = GAME_DATA.teamsData[teamToRender].usedTimeOuts;
   for(let i = 0; i < teamTimeOuts; i++) {
     elements[i].checked = true;
   }
@@ -94,7 +95,7 @@ function renderTeamHasService(teamToRender) {
   const selector = teamRenderSelectors.service + teamToRender;
   const element = getElementBySelector(selector);
 
-  const teamHasService = teamsData[teamToRender].hasService
+  const teamHasService = GAME_DATA.teamsData[teamToRender].hasService
   const serviceIndicatorIsOn = element.classList.contains("service");
 
   if(teamHasService && !serviceIndicatorIsOn) {

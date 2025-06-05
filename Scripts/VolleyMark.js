@@ -1,39 +1,3 @@
-//Variables
-const Modal = document.getElementById("modal");
-const modalContent = document.getElementById("modalContent");
-const gameLog_container = document.getElementById("gameLog");
-let gameLog = [];
-let Game = null;
-let TeamA,TeamB, maxSetPoints;
-let RenderTeamA = {
-    Name: document.querySelector("#teamNameA"),
-    SetsWon: document.querySelector("#setScoreA"),
-    Score: document.querySelector("#scoreMarkA"),
-    TeamPosition: [document.querySelector("#A1"),
-    document.querySelector("#A2"),
-    document.querySelector("#A3"),
-    document.querySelector("#A4"),
-    document.querySelector("#A5"),
-    document.querySelector("#A6")],
-    TimeOuts: [document.querySelector("#timeOutA1"),
-    document.querySelector("#timeOutA2")],
-    Service: document.querySelector("#serviceA")
-};
-let RenderTeamB = {
-    Name: document.querySelector("#teamNameB"),
-    SetsWon: document.querySelector("#setScoreB"),
-    Score: document.querySelector("#scoreMarkB"),
-    TeamPosition: [document.querySelector("#B1"),
-    document.querySelector("#B2"),
-    document.querySelector("#B3"),
-    document.querySelector("#B4"),
-    document.querySelector("#B5"),
-    document.querySelector("#B6")],
-    TimeOuts: [document.querySelector("#timeOutB1"),
-    document.querySelector("#timeOutB2")],
-    Service: document.querySelector("#serviceB")
-};
-
 //Listeners
 window.addEventListener('load', ()=>{
     start();
@@ -46,6 +10,8 @@ function start() {
     }else{
         startNewGame();
     }
+
+    renderGame();
 }
 //write the player number on position n
 document.querySelectorAll(".position").forEach(element => {
@@ -111,47 +77,11 @@ document.getElementById("editOptions").addEventListener("click",()=>{
 });
 
 //Functions
-function startNewGame(){
-    localStorage.removeItem("VolleyMarkGame");
-    TeamA = {
-        Name: "Team A",
-        SetsWon: 0,
-        Score: 0,
-        TeamPosition:["A1","A2","A3","A4","A5","A6"],
-        TimeOuts: 0,
-        Service: true
-    };
-    TeamB = {
-        Name: "Team B",
-        SetsWon: 0,
-        Score: 0,
-        TeamPosition:["B1","B2","B3","B4","B5","B6"],
-        TimeOuts: 0,
-        Service: false
-    };
-    maxSetPoints = {
-        Points: 25,
-        diffPoints:true,
-        firstReachMax:false,
-        sets:5
-    };
-    renderGame();
-    gameLog=[];
-    renderLog(Game);
-}
-
-function loadGame(gm){
-    Game = JSON.parse(gm);
-    TeamA = Game[0];
-    TeamB = Game[1];
-    maxSetPoints = Game[2];
-    renderGame();
-    renderLog(Game);
-}
 
 function create(elementType) {
     return document.createElement(elementType);
 }
+
 function addPointTeam(Team){
     if(Team=="A"){
         TeamA.Score++;
@@ -179,64 +109,6 @@ function subtractPointTeam(Team){
     }
     renderGame();
     renderLog(Game);
-}
-
-function renderGame(){
-    RenderTeamA.Name.innerHTML = TeamA.Name;
-    RenderTeamB.Name.innerHTML = TeamB.Name;
-
-    RenderTeamA.SetsWon.innerHTML = TeamA.SetsWon;
-    RenderTeamB.SetsWon.innerHTML = TeamB.SetsWon;
-
-    RenderTeamA.Score.innerHTML = TeamA.Score;
-    RenderTeamB.Score.innerHTML = TeamB.Score;
-
-    for(let i=0; i<6; i++){
-        RenderTeamA.TeamPosition[i].innerHTML = TeamA.TeamPosition[i];
-        RenderTeamB.TeamPosition[i].innerHTML = TeamB.TeamPosition[i];
-    };
-    let count=0;
-    document.querySelectorAll(".check").forEach(element=>{
-        if(element.id.includes("A")){
-            if(count<TeamA.TimeOuts){
-                element.checked = true;
-                count++;
-            }else{
-                element.checked = false;
-            }
-        }
-    });
-    count=0;
-    document.querySelectorAll(".check").forEach(element=>{
-        if(element.id.includes("B")){
-            if(count<TeamB.TimeOuts){
-                element.checked = true;
-                count++;
-            }else{
-                element.checked = false;
-            }
-        }
-    });
-    count=0;
-    
-    if(TeamA.Service){
-        if(!RenderTeamA.Service.classList.contains("service")){
-            RenderTeamA.Service.classList.add("service");
-        }
-        if(RenderTeamB.Service.classList.contains("service")){
-            RenderTeamB.Service.classList.remove("service");
-        }
-    }else{
-        if(!RenderTeamB.Service.classList.contains("service")){
-            RenderTeamB.Service.classList.add("service");
-        }
-        if(RenderTeamA.Service.classList.contains("service")){
-            RenderTeamA.Service.classList.remove("service");
-        }
-    }
-
-    Game = [TeamA,TeamB,maxSetPoints];
-    localStorage.setItem("Game", JSON.stringify(Game));
 }
 
 function renderLog(game){
