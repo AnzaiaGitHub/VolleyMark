@@ -1,11 +1,11 @@
-export function SetsController({setsWon, handleSetsWon}) {
+export function SetsController({setsWon, side, callAction}) {
   const handleIncrement = () => {
-    handleSetsWon(setsWon + 1);
+    callAction("INCREMENT_SETS", side);
   };
 
   const handleDecrement = () => {
-    if(setsWon > 0) {
-      handleSetsWon(setsWon - 1);
+    if (setsWon > 0) {
+      callAction("DECREMENT_SETS", side);
     }
   };
 
