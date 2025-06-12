@@ -14,31 +14,28 @@ export function TeamRotation({ positions, side, callAction }) {
   };
 
   return (
-    <div className="team-rotation">
-      <button className="toggle-rotation-btn" onClick={toggleCourtVisibility}>
-        {showCourtPositions ? "Hide Rotation" : "Show Rotation"}
-      </button>
+    <div className={"team-rotation "+side.toLowerCase()}>
+      <p className={`team-rotation_show-btn`} onClick={toggleCourtVisibility}>
+        {showCourtPositions ? "Close" : "Show Rotation"}
+      </p>
 
       {showCourtPositions &&
       <>
-        {!showEditPositions && <Rotation positions={positions} side={side} editPositions={() => setShowEditPosition(true)} />}
-        {showEditPositions && <EditRotation positions={positions} updatePositions={updatePositions}/> }
+        {(showEditPositions && <EditRotation positions={positions} updatePositions={updatePositions}/>) || <Rotation positions={positions} editPositions={() => setShowEditPosition(true)} />}
       </>
       }
     </div>
   );
 }
 
-function Rotation({ positions, side, editPositions}) {
-  const sideLetter = side === "LEFT" ? "L" : "R";
+function Rotation({ positions, editPositions}) {
   return (
     <>
-      <h3 className="rotation-title">Team Rotation</h3>
       <ul className="rotation-list">
         {positions.map((position, index) => (
           <li
             key={index}
-            className={`rotation-item `+sideLetter+`${+index + 1}`}
+            className={`rotation-item p${+index+1}`}
             onClick={() => editPositions()}>
             <span className="position-label">{position}</span>
           </li>
@@ -62,18 +59,24 @@ function EditRotation({ positions, updatePositions }) {
 
   return (
     <div className="edit-rotation">
-      <h4>Edit Rotation</h4>
+      <label for="rotation">Edit Rotation
       <input
+        name="rotation"
         type="text"
         value={editedRotation}
         onChange={(e) => setEditedRotation(e.target.value)}
         onBlur={() => {
+          if(editedRotation.trim() === '') {
+            setEditedRotation(['1','2','3','4','5','6'].join(','));
+            return;
+          }
           if(!checkPositions(editedRotation)) {
             setEditedRotation(positions.join(','));
           }}}
         autoFocus
         className="edit-positions-input"
         />
+      </label>
       <button
         className="save-positions-btn"
         onClick={() => {

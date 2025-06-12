@@ -12,10 +12,11 @@ export function SetsController({setsWon, side, callAction}) {
   return (
     <div className="team-set-controller">
       <div className="sets-team-handler">
-        <div className="sets-btn" onClick={() => handleIncrement()}>+</div>
         <div className="sets-btn" onClick={() => handleDecrement()}>-</div>
       </div>
-      <div className="sets-won-card">{setsWon}</div>
+      <div
+        className="sets-won-card"
+        onClick={()=>{handleIncrement()}}>{setsWon}</div>
     </div>
   );
 }
