@@ -1,0 +1,298 @@
+@page{
+    size: landscape;
+}
+:root{
+    --dark: rgba(0, 0, 34, 0.86); 
+    --dark-full: #002; 
+    --light: #dff;
+    --neon1-full: rgba(255, 251, 5, 1);
+    --neon1: rgba(255, 251, 5, 0.466);
+    --neon2-full: rgba(255, 147, 5, 1);
+    --neon2: rgba(255, 147, 5, 0.466);
+    --neon3-full: rgba(5, 255, 234, 1);
+    --neon3: rgba(5, 255, 234, 0.466);
+    --sm: 12px;
+    --md: 24px;
+    --lg: 40px;
+    --btn: #aaf;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background: var(--dark-full);
+  color: var(--light);
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-y: scroll;
+}
+
+.volley-mark {
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+}
+
+.team-side {
+  width: 45%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2vw;
+}
+
+.name-set-row {
+  width: 100%;
+  height: 10vw;
+  padding: 0 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 4vw;
+  align-items: center;
+  font-size: 3vw;
+}
+.team-name {
+  font-size: 3vw;
+}
+
+.team-set-controller {
+  display: flex;
+  justify-content: space-between;
+  gap: 1vw;
+  align-items: center;
+  height: 100%;
+}
+.reverse > .team-set-controller {
+  flex-direction: row-reverse;
+}
+.sets-won-card {
+  height: 80%;
+  width: 6vw;
+  border-radius: 1vw;
+  border: 1px solid var(--neon2-full);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s ease-in-out all;
+}
+.sets-won-card:active {
+  background-color: var(--neon2);
+}
+.sets-team-handler {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sets-btn {
+  font-size: 4vw;
+  padding: 0 2vw;
+  border-radius: 0.4rem;
+  border: 1px solid var(--neon3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s ease-in-out all;
+}
+.sets-btn:active {
+  background-color: var(--neon3);
+}
+
+.score-controller {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  height: 26vw;
+}
+.score-mark {
+  width: 30vw;
+  height: 100%;
+  border-radius: 0.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0.5rem 0.5rem 1rem var(--neon3);
+  border: 2px solid var(--neon3-full);
+  transition: 0.2s ease-out all;
+}
+.score-mark:active {
+  background-color: var(--light);
+  color: var(--dark);
+}
+.score-mark > div {
+  width: 100%;
+  font-size: 20vw;
+  font-family: 'Archivo Black';
+  text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.service-decrement-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.service-ball {
+  width: 5vw;
+  height: 5vw;
+  border-radius: 50%;
+  background-color: var(--neon3);
+  box-shadow: 0rem 0rem 1rem var(--neon3-full);
+  transition: 0.2s ease-out all;
+}
+.service-ball.to-serve {
+  fill: var(--neon2-full);
+}
+.score-decrement {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4vw;
+  width: 5vw;
+  height: 7vw;
+  text-align: center;
+  border-radius: 0.4rem;
+  border: 3px solid var(--neon2-full);
+  transition: 0.1s ease-out;
+}
+.score-decrement:active {
+  background-color: var(--neon2-full);
+}
+
+.team-rotation {
+  width: 25vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5vw;
+  position: fixed;
+  bottom: 0;
+  border-radius: 2vw 2vw 0 0;
+  border: 0.3vw dashed var(--neon2-full);
+  border-bottom: none;
+  background-color: var(--dark-full);
+  transition: 0.2s ease-in-out all;
+}
+.team-rotation.left {
+  left: 15vw;
+}
+.team-rotation.right {
+  right: 15vw;
+}
+.team-rotation_show-btn {
+  text-align: center;
+  width: 100%;
+  height: 5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 0.3vw dashed var(--neon2-full);
+}
+.team-rotation > .rotation-list {
+  width: 20vw;
+  height: 20vw;
+  border: 1px solid var(--neon3-full);
+  font-size: 3vw;
+  list-style: none;
+  padding: 0;
+  position: relative;
+}
+.rotation-list::before {
+  content: 'NET';
+  position: absolute;
+  color: var(--dark);
+  text-align: center;
+  font-size: 80%;
+  bottom: 100%;
+  left: -1px;
+  width: 100%;
+  border: 1px solid var(--neon3-full);
+  background-color: var(--neon3-full);
+}
+.rotation-list > li.rotation-item {
+  height: calc(100%/2);
+  width: calc(100%/3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.1s ease-in-out all;
+  border: 1px solid var(--neon3-full);
+  position: absolute;
+}
+.rotation-item.p1{right: 0; bottom: 0;}
+.rotation-item.p2{right: 0; top: 0;}
+.rotation-item.p3{right: calc(100%/3); top: 0;}
+.rotation-item.p4{left: 0; top: 0;}
+.rotation-item.p5{left: 0; bottom: 0;}
+.rotation-item.p6{left: calc(100%/3); bottom: 0;}
+.team-rotation > .edit-rotation {
+  height: 100%;
+  padding: 0.7vw 1vw;
+  font-size: 3vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5vw;
+}
+
+button {
+  padding: 0 3vw;
+  height: 6vw;
+  border-radius: 1vh;
+  border: 1px solid var(--neon3-full);
+  font-size: calc(var(--sm) *  1.5);
+  color: var(--light);
+  background: transparent;
+  transition: 0.2s ease-in-out all;
+}
+button.secondary:active {
+  background-color: var(--light);
+  color: var(--dark);
+}
+button.secondary {
+  background-color: transparent;
+  color: var(--neon2-full);
+  border: 1px dashed var(--neon2-full);
+}
+
+input {
+  padding: 1vw 1vw;
+  min-height: 2.5rem;
+  border-radius: 0.4rem;
+  border: 1px solid var(--neon2-full);
+  width: 100%;
+}
+
+
+.reverse {
+  flex-direction: row-reverse;
+}
+
+
+@media landscape and (max-width: 1920px) {
+  body {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+@media portrait and (max-width: 1920px) {
+  body {
+    width: 100vw;
+    height: 60vh;
+  }
+}
