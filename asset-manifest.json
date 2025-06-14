@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/VolleyMark/volley-mark/static/css/main.fe1cfb0a.css",
-    "main.js": "/VolleyMark/volley-mark/static/js/main.7439e2f1.js",
-    "static/js/453.d9436d0e.chunk.js": "/VolleyMark/volley-mark/static/js/453.d9436d0e.chunk.js",
-    "index.html": "/VolleyMark/volley-mark/index.html",
-    "main.fe1cfb0a.css.map": "/VolleyMark/volley-mark/static/css/main.fe1cfb0a.css.map",
-    "main.7439e2f1.js.map": "/VolleyMark/volley-mark/static/js/main.7439e2f1.js.map",
-    "453.d9436d0e.chunk.js.map": "/VolleyMark/volley-mark/static/js/453.d9436d0e.chunk.js.map"
+    "main.css": "/VolleyMark/static/css/main.fe1cfb0a.css",
+    "main.js": "/VolleyMark/static/js/main.0db2653d.js",
+    "static/js/453.d9436d0e.chunk.js": "/VolleyMark/static/js/453.d9436d0e.chunk.js",
+    "index.html": "/VolleyMark/index.html",
+    "main.fe1cfb0a.css.map": "/VolleyMark/static/css/main.fe1cfb0a.css.map",
+    "main.0db2653d.js.map": "/VolleyMark/static/js/main.0db2653d.js.map",
+    "453.d9436d0e.chunk.js.map": "/VolleyMark/static/js/453.d9436d0e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.fe1cfb0a.css",
-    "static/js/main.7439e2f1.js"
+    "static/js/main.0db2653d.js"
   ]
 }
