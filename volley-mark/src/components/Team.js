@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { getLabel } from "../Utils/Labels";
 import { SetsController } from "./SetsController";
 import { ScoreServeController } from "./ScoreServeController"
-import { TeamRotation } from "./TeamRotation";
+import { TeamManager } from "./TeamManager";
 export function Team({team, side, callAction}) {
   const setService = () => {
     callAction("SET_SERVICE", side);
@@ -9,7 +10,7 @@ export function Team({team, side, callAction}) {
 
   const handleNameChange = (newName) => {
     if (newName.trim() === "") {
-      alert("Team name cannot be empty");
+      alert(getLabel("name_cannot_be_empty"));
       return;
     }
 
@@ -23,30 +24,42 @@ export function Team({team, side, callAction}) {
         <SetsController setsWon={team.setsWon} side={side} callAction={callAction} />
       </div>
       <ScoreServeController score={team.score} hasService={team.hasService} setService={setService} side={side} callAction={callAction} />
-      <TeamRotation positions={team.positions} side={side} callAction={callAction}/>
+      <TeamManager positions={team.positions} side={side} usedTimeOuts={team.usedTimeOuts} callAction={callAction}/>
     </div>
   );
 }
 
 function TeamName({name, changeName}) {
-  const [teamName, setTeamName] = useState(name);
+  const [teamInputName, setTeamInputName] = useState(name);
   const [showNameInput, setShowNameInput] = useState(false);
 
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    setTeamInputName(name);
+  }, [name]);
+
+  useEffect(() => {
+    if (showNameInput && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [showNameInput]);
   return (
     <div className="team-name">
       {showNameInput ? (
         <input
           type="text"
-          value={teamName}
-          onChange={(e) => setTeamName(e.target.value)}
+          value={teamInputName}
+          onChange={(e) => setTeamInputName(e.target.value)}
           onBlur={() => {
-            changeName(teamName);
+            changeName(teamInputName);
             setShowNameInput(false);
           }}
-          autoFocus
+          ref={inputRef}
         />
       ) : (
-        <h2 onClick={() => setShowNameInput(true)}>{teamName}</h2>
+        <h2 onClick={() => setShowNameInput(true)}>{name}</h2>
       )}
     </div>
   );

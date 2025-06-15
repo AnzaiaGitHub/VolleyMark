@@ -1,5 +1,6 @@
 import { useState } from "react";
-export function TeamRotation({ positions, side, callAction }) {
+import { getLabel } from "../Utils/Labels";
+export function TeamManager({ positions, side, usedTimeOuts, callAction }) {
   const [showCourtPositions, setShowCourtPositions] = useState(false);
   const [showEditPositions, setShowEditPosition] = useState(false);
   
@@ -14,14 +15,15 @@ export function TeamRotation({ positions, side, callAction }) {
   };
 
   return (
-    <div className={"team-rotation "+side.toLowerCase()}>
-      <p className={`team-rotation_show-btn`} onClick={toggleCourtVisibility}>
-        {showCourtPositions ? "Close" : "Show Rotation"}
+    <div className={"team-manager "+side.toLowerCase()}>
+      <p className={`team-manager_show-btn`} onClick={toggleCourtVisibility}>
+        {showCourtPositions ? getLabel("close") : getLabel("manage_team")}
       </p>
 
       {showCourtPositions &&
       <>
         {(showEditPositions && <EditRotation positions={positions} updatePositions={updatePositions}/>) || <Rotation positions={positions} editPositions={() => setShowEditPosition(true)} />}
+        <TimeOuts usedTimeOuts={usedTimeOuts} side={side} callAction={callAction} />
       </>
       }
     </div>
@@ -51,7 +53,7 @@ function EditRotation({ positions, updatePositions }) {
   const checkPositions = (positions) => {
     const positionArray = positions.split(',').map(pos => pos.trim());
     if (positionArray.length !== 6) {
-      alert("Please enter exactly 6 positions, separated by commas.");
+      alert(getLabel("type_six_positions"));
       return false;
     }
     return true;
@@ -85,6 +87,18 @@ function EditRotation({ positions, updatePositions }) {
         }}>
         Save Positions
       </button>
+    </div>
+  );
+}
+
+function TimeOuts({ usedTimeOuts, side, callAction}) {
+  const handleClick = () => {
+    callAction("USE_TIMEOUT", side);
+  };
+  return (
+    <div className="timeouts-container">
+      <p>{getLabel("used_time_outs")}</p>
+      <button onClick={handleClick}>{usedTimeOuts}</button>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { ServiceBall } from './ServiceBall';
 export function ScoreServeController({score, hasService, setService, side, callAction}) {
   const handleIncrement = () => {
