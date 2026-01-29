@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/VolleyMark/static/css/main.16ecbb02.css",
+    "main.css": "/VolleyMark/static/css/main.b27f6001.css",
     "main.js": "/VolleyMark/static/js/main.c6e9b655.js",
     "static/js/453.d9436d0e.chunk.js": "/VolleyMark/static/js/453.d9436d0e.chunk.js",
     "index.html": "/VolleyMark/index.html",
-    "main.16ecbb02.css.map": "/VolleyMark/static/css/main.16ecbb02.css.map",
+    "main.b27f6001.css.map": "/VolleyMark/static/css/main.b27f6001.css.map",
     "main.c6e9b655.js.map": "/VolleyMark/static/js/main.c6e9b655.js.map",
     "453.d9436d0e.chunk.js.map": "/VolleyMark/static/js/453.d9436d0e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.16ecbb02.css",
+    "static/css/main.b27f6001.css",
     "static/js/main.c6e9b655.js"
   ]
 }
