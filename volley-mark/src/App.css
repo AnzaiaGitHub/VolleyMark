@@ -332,7 +332,7 @@ body{
   box-sizing: inherit;
   border: 2px solid var(--neon3-full);
   background-color: var(--dark);
-  letter-spacing: 2.58rem;
+  letter-spacing: 0.5rem;
   text-align: center;
   padding: 0 1rem;
 }
