@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getLabel } from "../Utils/Labels";
+import { restartSVG } from "../icons/restart";
 export function TeamManager({ positions, side, usedTimeOuts, callAction }) {
   const [showCourtPositions, setShowCourtPositions] = useState(false);
   const [showEditPositions, setShowEditPosition] = useState(false);
@@ -22,7 +23,12 @@ export function TeamManager({ positions, side, usedTimeOuts, callAction }) {
 
       {showCourtPositions &&
       <>
-        {(showEditPositions && <EditRotation positions={positions} updatePositions={updatePositions}/>) || <Rotation positions={positions} editPositions={() => setShowEditPosition(true)} />}
+        {(
+            showEditPositions &&
+            <EditRotation positions={positions} updatePositions={updatePositions}/>
+          ) ||
+          <Rotation positions={positions} editPositions={() => setShowEditPosition(true)} side={side} callAction={callAction} />
+        }
         <TimeOuts usedTimeOuts={usedTimeOuts} side={side} callAction={callAction} />
       </>
       }
@@ -30,20 +36,36 @@ export function TeamManager({ positions, side, usedTimeOuts, callAction }) {
   );
 }
 
-function Rotation({ positions, editPositions}) {
+function Rotation({ positions, editPositions, side, callAction }) {
+  const rotate = () => {
+    callAction("ROTATE", side);
+  };
+
+  const inverseRotate = () => {
+    callAction("INVERSE_ROTATE", side);
+  };
+
   return (
-    <>
-      <ul className="rotation-list">
+    <div className="rotation-container">
+      <ul className={`rotation-list ${side.toLowerCase()}`}>
         {positions.map((position, index) => (
           <li
             key={index}
-            className={`rotation-item p${+index+1}`}
+            className={`rotation-item p${+index+1} ${side.toLowerCase()}`}
             onClick={() => editPositions()}>
             <span className="position-label">{position}</span>
           </li>
         ))}
       </ul>
-    </>
+      <div className="rotate-btn_container">
+        <button className="rotate-forward" onClick={rotate}>
+          {restartSVG()}
+        </button>
+        <button className="rotate-backward" onClick={inverseRotate}>
+          {restartSVG()}
+        </button>
+      </div>
+    </div>
 
   );
 }
@@ -59,6 +81,21 @@ function EditRotation({ positions, updatePositions }) {
     return true;
   };
 
+  const handleBlur = () => {
+    if(editedRotation.trim() === '') {
+      setEditedRotation(['1','2','3','4','5','6'].join(','));
+      return;
+    }
+    if(!checkPositions(editedRotation)) {
+      setEditedRotation(positions.join(','));
+    }
+  };
+
+  const handleSave = () => {
+    const newPositions = editedRotation.split(',').map(pos => pos.trim());
+    updatePositions(newPositions);
+  };
+
   return (
     <div className="edit-rotation">
       <label for="rotation">Edit Rotation
@@ -67,25 +104,15 @@ function EditRotation({ positions, updatePositions }) {
         type="text"
         value={editedRotation}
         onChange={(e) => setEditedRotation(e.target.value)}
-        onBlur={() => {
-          if(editedRotation.trim() === '') {
-            setEditedRotation(['1','2','3','4','5','6'].join(','));
-            return;
-          }
-          if(!checkPositions(editedRotation)) {
-            setEditedRotation(positions.join(','));
-          }}}
+        onBlur={handleBlur}
         autoFocus
         className="edit-positions-input"
         />
       </label>
       <button
         className="save-positions-btn"
-        onClick={() => {
-          const newPositions = editedRotation.split(',').map(pos => pos.trim());
-          updatePositions(newPositions);
-        }}>
-        Save Positions
+        onClick={handleSave}>
+        {(getLabel("save") || "Save Positions")}
       </button>
     </div>
   );
@@ -97,7 +124,7 @@ function TimeOuts({ usedTimeOuts, side, callAction}) {
   };
   return (
     <div className="timeouts-container">
-      <p>{getLabel("used_time_outs")}</p>
+      <p>{getLabel("used_time_outs") || "Used Time Outs"}</p>
       <button onClick={handleClick}>{usedTimeOuts}</button>
     </div>
   );

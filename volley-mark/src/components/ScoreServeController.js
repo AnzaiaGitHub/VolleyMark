@@ -5,9 +5,7 @@ export function ScoreServeController({score, hasService, setService, side, callA
   };
 
   const handleDecrement = () => {
-    if (score > 0) {
-      callAction("DECREMENT_SCORE", side);
-    }
+    callAction("DECREMENT_SCORE", side);
   };
 
   return (

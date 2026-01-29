@@ -1,6 +1,7 @@
 export const getDefaultGame = () => {
   return {
     gameDate: Date.now(),
+    currentDeuces: 0,
     settings: getDefaultSettings(),
     leftTeam: getDefaultTeamInfo('Team A', true),
     rightTeam: getDefaultTeamInfo('Team B', false)
@@ -18,12 +19,12 @@ const getDefaultTeamInfo = (name, hasService) => {
   };
 };
 
-const getDefaultSettings = () => {
+export const getDefaultSettings = () => {
   return {
     maxSetPoints: 25,
     deuce: {//if deuces are not allowed, the game must end when the first team reach the maxSetsPoints
       allowed: true,
-      howMany: undefined
+      howMany: undefined, //undefined means unlimited
     },
     maxSets: 5,
     maxTimeOuts: 2

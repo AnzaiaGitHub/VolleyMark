@@ -87,7 +87,8 @@ body{
   transition: 0.3s ease-in-out all;
 }
 .sets-won-card:active {
-  background-color: var(--neon2);
+  background-color: var(--neon2-full);
+  scale: 1.8;
 }
 .sets-team-handler {
   height: 100%;
@@ -103,10 +104,11 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: 0.3s ease-in-out all;
+  transition: 0.2s ease-in-out all;
 }
 .sets-btn:active {
   background-color: var(--neon3);
+  scale: 1.2;
 }
 
 .score-controller {
@@ -130,6 +132,7 @@ body{
 .score-mark:active {
   background-color: var(--light);
   color: var(--dark);
+  scale: 1.2;
 }
 .score-mark > div {
   width: 100%;
@@ -146,7 +149,7 @@ body{
   flex-direction: column;
   justify-content: space-around;
 }
-.service-ball {
+.service-ball > svg {
   width: 5vw;
   height: 5vw;
   border-radius: 50%;
@@ -154,7 +157,7 @@ body{
   box-shadow: 0rem 0rem 1rem var(--neon3-full);
   transition: 0.2s ease-out all;
 }
-.service-ball.to-serve {
+.service-ball.to-serve > svg{
   fill: var(--neon2-full);
 }
 .score-decrement {
@@ -170,11 +173,12 @@ body{
   transition: 0.1s ease-out;
 }
 .score-decrement:active {
+  scale: 1.2;
   background-color: var(--neon2-full);
 }
 
 .team-manager {
-  width: 25vw;
+  width: 40vw;
   padding: 0 0 1.5vw;
   display: flex;
   flex-direction: column;
@@ -190,10 +194,10 @@ body{
   transition: 0.2s ease-in-out all;
 }
 .team-manager.left {
-  left: 15vw;
+  left: 5vw;
 }
 .team-manager.right {
-  right: 15vw;
+  right: 5vw;
 }
 .team-manager_show-btn {
   cursor: pointer;
@@ -205,7 +209,18 @@ body{
   align-items: center;
   border-bottom: 0.3vw dashed var(--neon2-full);
 }
-.team-manager > .rotation-list {
+.team-manager .rotation-container {
+  width: 100%;
+  height: 25vw;
+  display: flex;
+  justify-content: center;
+  gap: 4vw;
+  align-items: center;
+}
+.team-manager.left .rotation-container {
+  flex-direction: row-reverse;
+}
+.team-manager .rotation-container .rotation-list {
   width: 20vw;
   height: 20vw;
   border: 1px solid var(--neon3-full);
@@ -213,22 +228,67 @@ body{
   list-style: none;
   padding: 0;
   position: relative;
+  translate: 1rem;
+  background-color: var(--neon2);
 }
-.rotation-list::before {
+.team-manager.left .rotation-container .rotation-list {
+  translate: -1rem;
+}
+.team-manager .rotation-container .rotate-btn_container {
+  width: fit-content;
+  height: 20vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.team-manager .rotation-container .rotate-btn_container > button {
+  width: 6vw;
+  height: 6vw;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s ease-in-out all;
+}
+.team-manager .rotation-container .rotate-btn_container > button:active {  
+  scale: 1.1;
+  background-color: var(--neon3);
+}
+.rotate-btn_container button svg {
+  width: 3vw;
+  height: 3vw;
+  fill: var(--neon2-full);
+  stroke: var(--neon2-full);
+}
+
+.rotate-btn_container button.rotate-forward > svg {
+  transform: rotateY(180deg);
+}
+
+.rotation-list.right::before, .rotation-list.left::after {
   content: 'NET';
   position: absolute;
-  color: var(--dark);
+  color: var(--neon2-full);
   text-align: center;
   font-size: 80%;
-  bottom: 100%;
-  left: -1px;
-  width: 100%;
-  border: 1px solid var(--neon3-full);
-  background-color: var(--neon3-full);
+  transform: rotate(-90deg);
+  translate: -11.5vw 8.2vw;
+  width: 20vw;
+  box-sizing: inherit;
+  border: 2px solid var(--neon3-full);
+  background-color: var(--dark);
+  letter-spacing: 2.58rem;
+  text-align: center;
+  padding: 0 1rem;
+}
+.rotation-list.left::after {
+  translate: 11.2vw 8.25vw;
+  transform: rotate(90deg);
 }
 .rotation-list > li.rotation-item {
-  height: calc(100%/2);
-  width: calc(100%/3);
+  height: calc(100%/3);
+  width: calc(100%/2);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -236,12 +296,12 @@ body{
   border: 1px solid var(--neon3-full);
   position: absolute;
 }
-.rotation-item.p1{right: 0; bottom: 0;}
-.rotation-item.p2{right: 0; top: 0;}
-.rotation-item.p3{right: calc(100%/3); top: 0;}
-.rotation-item.p4{left: 0; top: 0;}
-.rotation-item.p5{left: 0; bottom: 0;}
-.rotation-item.p6{left: calc(100%/3); bottom: 0;}
+.rotation-item.p1.right, .rotation-item.p4.left {right: 0; top: 0;}
+.rotation-item.p2.right, .rotation-item.p5.left {left: 0; top: 0;}
+.rotation-item.p3.right, .rotation-item.p6.left {top: calc(100%/3); left: 0;}
+.rotation-item.p4.right, .rotation-item.p1.left {left: 0; bottom: 0;}
+.rotation-item.p5.right, .rotation-item.p2.left {right: 0; bottom: 0;}
+.rotation-item.p6.right, .rotation-item.p3.left {top: calc(100%/3); right: 0;}
 .team-manager > .edit-rotation {
   height: 100%;
   padding: 0.7vw 1vw;
@@ -258,7 +318,16 @@ body{
   display: flex;
   justify-content: space-around;
   align-items: center;
+  padding: 0 2vw;
 }
+.team-manager.left .timeouts-container {
+  flex-direction: row-reverse;
+}
+.team-manager .timeouts-container > button:active {
+  background-color: var(--neon3);
+  scale: 1.2;
+}
+
 
 .middle-toolbar-list {
   padding: 9vw 0;
@@ -277,25 +346,104 @@ body{
   align-items: center;
   width: 6vw;
   height: 6vw;
-  padding: 1vw;
-  border-radius: 0.5rem;
-  border: 1px solid var(--neon3-full);
   cursor: pointer;
   transition: 0.2s ease-in-out all;
 }
 .toolbar-item > button {
-  border: none;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: 0.5rem;
+  border: 1px solid var(--neon3-full);
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   transition: 0.2s ease-in-out all;
 }
-.toolbar-item > button > svg{
-  width: 4vw;
-  height: 4vw;
+.toolbar-item > button:active {
+  background-color: var(--neon3);
+  scale: 1.2;
+}
+.toolbar-item > button > svg {
+  width: 2rem;
+  height: 2rem;
   fill: var(--neon2-full);
   stroke: var(--neon2-full);
+}
+
+.match-settings-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  height: fit-content;
+  background-color: var(--dark-full);
+  border: 2px solid var(--neon2-full);
+  border-radius: 1vw;
+  box-shadow: 0rem 0rem 2rem var(--neon2-full);
+  padding: 2vw;
+  gap: 4vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 1000;
+}
+.match-settings-modal .close-button {
+  position: absolute;
+  top: 1vw;
+  right: 1vw;
+  width: 3vw;
+  height: 3vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 0.4rem;
+  background-color: var(--neon2-full);
+  color: var(--light);
+  font-weight: bold;
+  font-size: 2vw;
+  cursor: pointer;
+  transition: 0.2s ease-in-out all;
+}
+.settings-form-container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4vh;
+}
+.deuce-settings {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2vw;
+  width: 100%;
+}
+.deuce-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1vw;
+}
+.deuce-item > label {
+  font-size: var(--sm);
+}
+.modal-actions {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 2vw;
 }
 
 button {
