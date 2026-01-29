@@ -1,15 +1,21 @@
-import { useState, useReducer, useEffect } from 'react';
-import { Team } from './components/Team';
-import { MiddleToolbar } from './components/MiddleToolbar';
-import { userActions } from './actions/userActions';
-import { gameActions } from './actions/gameActions';
-import { storageManager } from './Utils/storageManager';
 import { SIDE } from './Constants';
+
+import { useState, useReducer, useEffect } from 'react';
+
+import { userActions, validateTimeoutAvailable } from './actions/userActions';
+import { gameActions } from './actions/gameActions';
+
+import { storageManager } from './Utils/storageManager';
 import './App.css';
 import { getDefaultGame } from './Utils/defaults';
-import { MatchSettingsModal } from './components/MatchSettingsModal';
+
 import { scoreController } from './controllers/scoreController';
 import { rotationController } from './controllers/rotationController';
+
+import { MiddleToolbar } from './components/MiddleToolbar';
+import { Team } from './components/Team';
+import { MatchSettingsModal } from './components/MatchSettingsModal';
+import { Timer } from './components/Timer';
 
 function App() {
   const handleAction = (type, value) => {
@@ -17,6 +23,8 @@ function App() {
   };
 
   const [showMatchSettings, setShowMatchSettings] = useState(false);
+  const [showTimer, setShowTimer] = useState(false);
+  const [timer, setTimer] = useState(0);
 
   const [state, dispatch] = useReducer((state, action) => {
     const savedGame = (stateToReturn) => {
@@ -30,8 +38,18 @@ function App() {
       case "UPDATE_TEAM_NAME":
         return savedGame(userActions.updateTeamName(state, action.payload));
       case "USE_TIMEOUT":
+        const {valid, message} = validateTimeoutAvailable(state, action.payload);
+        if(!valid) {
+          alert(message);
+          return state;
+        }
+        setTimer(30);
+        setShowTimer(true);
         return savedGame(userActions.useTimeOut(state, action.payload));
-
+      case "STOP_TIMER":
+        setTimer(0);
+        setShowTimer(false);
+        return state;
       case "INCREMENT_SCORE":
         const newState = scoreController.increment(state, action.payload);
         const winner = gameActions.validateWinConditions(newState);
@@ -89,7 +107,7 @@ function App() {
   return (
     <div className="volley-mark">
       {showMatchSettings &&  <MatchSettingsModal settings={state.settings} callAction={handleAction} />}
-      {/* Timer for timeout feature */}
+      {showTimer && <Timer seconds={timer} callAction={handleAction} />}
       <Team team={{...state.leftTeam}} side={SIDE.LEFT} callAction={handleAction} />
       <MiddleToolbar settings = {state.settings} callAction={handleAction}/>
       <Team team={{...state.rightTeam}} side={SIDE.RIGHT} callAction={handleAction}/>

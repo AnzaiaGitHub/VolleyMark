@@ -105,12 +105,6 @@ const userActions = {
     };
   },
   useTimeOut: (gameState, side) => {
-    const {valid, message} = validateTimeoutAvailable(gameState, side);
-    if(!valid) {
-      alert(message);
-      return gameState;
-    }
-
     const teamKey = getTeamKey(side);
     return updateTeamProperty(gameState, side, {
       usedTimeOuts: gameState[teamKey].usedTimeOuts + 1

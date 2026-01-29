@@ -24,7 +24,8 @@ const labels = {
     max_set_points: "Max Set Points",
     reset: "Reset",
     won_set: "won the set",
-    want_restart_and_change_sides: "Do you want to restart and change sides?"
+    want_restart_and_change_sides: "Do you want to restart and change sides?",
+    stop: "Stop"
   },
   SPN: {
     match_settings: "Configuracion del Partido",
@@ -51,7 +52,8 @@ const labels = {
     max_set_points: "Puntos Maximos por Set",
     reset: "Reiniciar",
     won_set: "ha ganado el set",
-    want_restart_and_change_sides: "Quieres reiniciar y cambiar de lado?"
+    want_restart_and_change_sides: "Quieres reiniciar y cambiar de lado?",
+    stop: "Detener"
   }
 };
 
