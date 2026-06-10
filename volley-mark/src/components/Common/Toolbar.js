@@ -1,30 +1,56 @@
-import { getLabel } from "../Utils/Labels";
-import { fullscreenSVG } from "../icons/fullscreen";
-import { restartSVG } from "../icons/restart";
-import { crossedArrowsSVG } from "../icons/crossedArrows";
-import { settingsSVG } from "../icons/settings";
+import { getLabel } from "../../Utils/Labels";
+import { fullscreenSVG } from "../../icons/fullscreen";
+import { restartSVG } from "../../icons/restart";
+import { crossedArrowsSVG } from "../../icons/crossedArrows";
+import { settingsSVG } from "../../icons/settings";
+import { useState } from "react";
+import { TeamManager } from "../Team/TeamManager";
+import { SIDE } from "../../Constants";
 
-export function MiddleToolbar({callAction}) {
+export function Toolbar({ settings, leftTeam, rightTeam, callAction }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
   const handleAction = (type, value) => {
     callAction(type, value);
-  }
-  const toolBarItems = [
+  };
+
+  return (
+    <div className={`toolbar ${isOpen ? "open" : ""}`}>
+      <button className="toggle-btn" onClick={toggleSidebar}>
+        {isOpen ? getLabel("close") || "Close" : getLabel("more_actions") || "More Actions"}
+      </button>
+      <div className="toolbar-content">
+        <TeamManager side={SIDE.LEFT} team={leftTeam} callAction={callAction} maxTimeOuts={settings.maxTimeOuts}/>
+        <ToolbarList handleAction={handleAction} />
+        <TeamManager side={SIDE.RIGHT} team={rightTeam} callAction={callAction} maxTimeOuts={settings.maxTimeOuts} />
+      </div>
+    </div>
+  );
+};
+
+function ToolbarList({handleAction}) {
+  const toolbarItems = [
     // Add toolbar items here
     <FullScreenBtn key="fullscreen" />,
     <ChangeSideBtn key="changeSides" handleAction={handleAction} />,
     <RestartGameBtn key="restartGame" handleAction={handleAction} />,
     <MatchSettingsBtn key="matchSettings" handleAction={handleAction}/>
   ];
+
   return (
-    <ul className="middle-toolbar-list">
-      {toolBarItems.map((item, index) => (
-        <li key={index} className="toolbar-item">
-          {item}
-        </li>
-      ))}
-    </ul>
+  <ul className="toolbar-list">
+    {toolbarItems.map((item, index) => (
+      <li key={index} className="toolbar-item">
+        {item}
+      </li>
+    ))}
+  </ul>
   );
-};
+}
 
 function FullScreenBtn() {
   const toggleFullScreen = () => {

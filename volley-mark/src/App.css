@@ -34,7 +34,7 @@ body{
 .volley-mark {
   padding: 0.5rem 1rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: flex-start;
   width: 100vw;
   height: 100vh;
@@ -113,7 +113,7 @@ body{
 
 .score-controller {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 24vw;
@@ -143,11 +143,20 @@ body{
   display: flex;
   justify-content: center;
 }
+.service-indicator {
+  width: 100%;
+  text-align: center;
+  color: var(--neon3);
+}
+.service-indicator.to-serve {
+  color: var(--neon2-full);
+}
 .service-decrement-container {
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  align-items: center;
 }
 .service-ball > svg {
   width: 5vw;
@@ -195,7 +204,7 @@ body{
   background-color: var(--dark);
   color: var(--light);
   border-radius: 50%;
-  z-index: 10;
+  z-index: 50;
 }
 .timer::after {
   content: '';
@@ -233,50 +242,39 @@ body{
 
 .team-manager {
   width: 40vw;
+  height: 100%;
   padding: 0 0 1.5vw;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   gap: 5vw;
-  position: fixed;
-  bottom: 0;
-  border-radius: 2vw 2vw 0 0;
-  border: 0.3vw dashed var(--neon2-full);
-  border-bottom: none;
   background-color: var(--dark-full);
   transition: 0.2s ease-in-out all;
+  overflow: hidden;
 }
-.team-manager.left {
-  left: 5vw;
-}
-.team-manager.right {
-  right: 5vw;
-}
-.team-manager_show-btn {
-  cursor: pointer;
-  text-align: center;
+.rotation-manager {
   width: 100%;
-  height: 5vw;
+  height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-bottom: 0.3vw dashed var(--neon2-full);
+  gap: 2vw;
 }
-.team-manager .rotation-container {
+.rotation-manager .rotation-container {
   width: 100%;
-  height: 25vw;
+  height: 30vw;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  gap: 4vw;
+  gap: 2vw;
   align-items: center;
-}
-.team-manager.left .rotation-container {
-  flex-direction: row-reverse;
+  transition: 0.2s ease-in-out all;
 }
 .team-manager .rotation-container .rotation-list {
-  width: 20vw;
-  height: 20vw;
+  min-width: 25vw;
+  min-height: 25vw;
   border: 1px solid var(--neon3-full);
   font-size: 3vw;
   list-style: none;
@@ -284,19 +282,22 @@ body{
   position: relative;
   translate: 1rem;
   background-color: var(--neon2);
+  transition: 0.2s ease-in-out all;
 }
-.team-manager.left .rotation-container .rotation-list {
+.left .rotation-container .rotation-list {
   translate: -1rem;
 }
-.team-manager .rotation-container .rotate-btn_container {
-  width: fit-content;
-  height: 20vw;
+.rotation-container .rotation-btn_container {
+  height: fit-content;
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
 }
-.team-manager .rotation-container .rotate-btn_container > button {
+.left .rotation-btn_container {
+  flex-direction: row-reverse;
+}
+.team-manager .rotation-container .rotation-btn_container > button {
   width: 6vw;
   height: 6vw;
   padding: 0;
@@ -305,18 +306,18 @@ body{
   align-items: center;
   transition: 0.2s ease-in-out all;
 }
-.team-manager .rotation-container .rotate-btn_container > button:active {  
+.team-manager .rotation-container .rotation-btn_container > button:active {  
   scale: 1.1;
   background-color: var(--neon3);
 }
-.rotate-btn_container button svg {
+.rotation-btn_container button svg {
   width: 3vw;
   height: 3vw;
   fill: var(--neon2-full);
   stroke: var(--neon2-full);
 }
 
-.rotate-btn_container button.rotate-forward > svg {
+.rotation-btn_container button.rotate-forward > svg {
   transform: rotateY(180deg);
 }
 
@@ -327,8 +328,8 @@ body{
   text-align: center;
   font-size: 80%;
   transform: rotate(-90deg);
-  translate: -11.5vw 8.2vw;
-  width: 20vw;
+  translate: -13.8vw 10.6vw;
+  width: 25vw;
   box-sizing: inherit;
   border: 2px solid var(--neon3-full);
   background-color: var(--dark);
@@ -337,10 +338,10 @@ body{
   padding: 0 1rem;
 }
 .rotation-list.left::after {
-  translate: 11.2vw 8.25vw;
+  translate: 13.8vw 10.6vw;
   transform: rotate(90deg);
 }
-.rotation-list > li.rotation-item {
+.rotation-container .rotation-list > li.rotation-item {
   height: calc(100%/3);
   width: calc(100%/2);
   display: flex;
@@ -356,15 +357,51 @@ body{
 .rotation-item.p4.right, .rotation-item.p1.left {left: 0; bottom: 0;}
 .rotation-item.p5.right, .rotation-item.p2.left {right: 0; bottom: 0;}
 .rotation-item.p6.right, .rotation-item.p3.left {top: calc(100%/3); right: 0;}
-.team-manager > .edit-rotation {
+.rotation-manager > .edit-rotation {
+  width: 100%;
   height: 100%;
-  padding: 0.7vw 1vw;
   font-size: 3vw;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  gap: 5vw;
+}
+.edit-rotation .rotation-list {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2vw;
+  font-size: 0.8rem;
+  list-style: none;
+}
+.edit-rotation .rotation-list > li {
+  min-width: 5vw;
+  height: 6vw;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--neon3-full);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s ease-in-out all;
+}
+.edit-rotation .rotation-list li.editing {
+  background-color: var(--light);
+  color: var(--dark);
+}
+.edit-rotation-btns {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.edit-rotation-btns .position-handler-btn {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s ease-in-out all;
 }
 .timeouts-container {
   width: 100%;
@@ -382,8 +419,47 @@ body{
   scale: 1.2;
 }
 
-
-.middle-toolbar-list {
+.toolbar {
+  position: fixed;
+  height: 100vh;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10vh);
+  width: 100vw;
+  background-color: var(--dark-full);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1vw;
+  z-index: 10;
+  transition: 0.3s ease-out transform;
+}
+.toolbar.open {
+  transform: translateX(-50%) translateY(-100vh);
+}
+.toolbar .toggle-btn {
+  width: 100vw;
+  height: 10vh;
+  border-radius: 0.4rem 0.4rem 0 0;
+  border: 1px solid var(--neon3);
+  border-bottom: 1px dashed var(--neon3-full);
+  background-color: transparent;
+  color: var(--neon2-full);
+  font-size: 3vw;
+  cursor: pointer;
+  transition: 0.1s ease-in all;
+}
+.toolbar-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2vw;
+  overflow: hidden;
+}
+.toolbar-list {
   padding: 9vw 0;
   display: flex;
   flex-direction: column;
@@ -393,7 +469,7 @@ body{
   width: 6vw;
   height: 100%;
 }
-.middle-toolbar-list > .toolbar-item {
+.toolbar-list > .toolbar-item {
   list-style: none;
   display: flex;
   justify-content: center;
@@ -432,36 +508,64 @@ body{
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90vw;
-  height: fit-content;
+  height: 90vh;
   background-color: var(--dark-full);
   border: 2px solid var(--neon2-full);
   border-radius: 1vw;
   box-shadow: 0rem 0rem 2rem var(--neon2-full);
   padding: 2vw;
-  gap: 4vw;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   z-index: 1000;
 }
+.match-settings-modal .modal-settings-header {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .match-settings-modal .close-button {
-  position: absolute;
-  top: 1vw;
-  right: 1vw;
-  width: 3vw;
-  height: 3vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: none;
-  border-radius: 0.4rem;
-  background-color: var(--neon2-full);
-  color: var(--light);
   font-weight: bold;
   font-size: 2vw;
   cursor: pointer;
   transition: 0.2s ease-in-out all;
+}
+.match-settings-modal .settings-view-tabs {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 0.5vw;
+  width: 100%;
+}
+.match-settings-modal .modal-settings-header button {
+  position: relative;
+  top: 2px;
+  padding: 0.5vw 1vw;
+  border: 1px solid var(--neon2-full);
+  border-bottom: 2px solid transparent;
+  background-color: transparent;
+  color: var(--neon2-full);
+  font-size: 1.5vw;
+  cursor: pointer;
+  transition: 0.2s ease-in-out all;
+  border-bottom: none;
+}
+.match-settings-modal .modal-settings-header button.active {
+  border-color:  var(--neon3-full);
+  color: var(--light);
+  border-bottom: 2px solid var(--dark-full);
+}
+.match-settings-modal .inner-view {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--neon3-full);
+  padding: 2vw;
 }
 .settings-form-container {
   width: 100%;

@@ -25,7 +25,9 @@ const labels = {
     reset: "Reset",
     won_set: "won the set",
     want_restart_and_change_sides: "Do you want to restart and change sides?",
-    stop: "Stop"
+    stop: "Stop",
+    incompatible_game_version: "The saved game version is not compatible with the current app version. The saved game will be deleted.",
+    edit_positions: "Edit Positions",
   },
   SPN: {
     match_settings: "Configuracion del Partido",
@@ -53,7 +55,9 @@ const labels = {
     reset: "Reiniciar",
     won_set: "ha ganado el set",
     want_restart_and_change_sides: "Quieres reiniciar y cambiar de lado?",
-    stop: "Detener"
+    stop: "Detener",
+    incompatible_game_version: "La version del juego guardado no es compatible con la version actual de la app. El juego guardado sera borrado.",
+    edit_positions: "Editar Posiciones",
   }
 };
 

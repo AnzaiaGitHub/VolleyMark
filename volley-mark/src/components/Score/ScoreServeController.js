@@ -1,5 +1,5 @@
 import { ServiceBall } from './ServiceBall';
-export function ScoreServeController({score, hasService, setService, side, callAction}) {
+export function ScoreServeController({teamInfo, side, callAction}) {
   const handleIncrement = () => {
     callAction("INCREMENT_SCORE", side);
   };
@@ -8,15 +8,24 @@ export function ScoreServeController({score, hasService, setService, side, callA
     callAction("DECREMENT_SCORE", side);
   };
 
+  const setService = () => {
+    callAction("SET_SERVICE", side);
+  };
+
   return (
     <div className={`score-controller${side === 'RIGHT' ? " reverse" : ""}`}>
       <div className="service-decrement-container">
-        <ServiceBall hasService={hasService} setService={setService} />
+        {
+          <p className={`service-indicator ${side.toLowerCase()} ${teamInfo.hasService ? "to-serve" : ""}`}>
+            {teamInfo.positions[0]}
+          </p>
+        }
+        <ServiceBall hasService={teamInfo.hasService} setService={setService} />
         <div className="score-decrement" onClick={() => handleDecrement()}>-</div>
       </div>
       <div className='score-mark'>
         <div onClick={() => handleIncrement()}>
-          {score.toString().split('').map((char,index) => {
+          {teamInfo.score.toString().split('').map((char,index) => {
             return (<span key={index + side}>{char}</span>)
           })}
         </div>

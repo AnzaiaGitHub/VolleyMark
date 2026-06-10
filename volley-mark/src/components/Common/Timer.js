@@ -1,4 +1,4 @@
-import { getLabel } from "../Utils/Labels";
+import { getLabel } from "../../Utils/Labels";
 import { useEffect, useState } from "react";
 
 export const Timer = ({seconds, callAction}) => {

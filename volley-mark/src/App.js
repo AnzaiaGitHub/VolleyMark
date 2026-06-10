@@ -4,6 +4,7 @@ import { useState, useReducer, useEffect } from 'react';
 
 import { userActions, validateTimeoutAvailable } from './actions/userActions';
 import { gameActions } from './actions/gameActions';
+import { teamActions } from './actions/teamActions';
 
 import { storageManager } from './Utils/storageManager';
 import './App.css';
@@ -12,10 +13,10 @@ import { getDefaultGame } from './Utils/defaults';
 import { scoreController } from './controllers/scoreController';
 import { rotationController } from './controllers/rotationController';
 
-import { MiddleToolbar } from './components/MiddleToolbar';
-import { Team } from './components/Team';
-import { MatchSettingsModal } from './components/MatchSettingsModal';
-import { Timer } from './components/Timer';
+import { Toolbar } from './components/Common/Toolbar';
+import { Team } from './components/Team/Team';
+import { MatchSettingsModal } from './components/SettingsModal/MatchSettingsModal';
+import { Timer } from './components/Common/Timer';
 
 function App() {
   const handleAction = (type, value) => {
@@ -100,17 +101,66 @@ function App() {
     ...getDefaultGame()
   });
 
+  const [teams, dispatchTeams] = useReducer((teams, action) => {
+    const saveTeams = (teamsToReturn) => {
+      storageManager.saveTeams(teamsToReturn);
+      return teamsToReturn;
+    };
+
+    try {
+      switch(action.type) {
+        case "ADD_TEAM":
+          return saveTeams(teamActions.addTeam(teams, action.payload));
+        
+        case "UPDATE_TEAM":
+          return saveTeams(teamActions.updateTeam(teams, action.payload.teamId, action.payload.updates));
+        
+        case "DELETE_TEAM":
+          return saveTeams(teamActions.deleteTeam(teams, action.payload));
+        
+        case "ADD_PLAYER_TO_TEAM":
+          return saveTeams(teamActions.addPlayerToTeam(teams, action.payload.teamId, action.payload.player));
+        
+        case "REMOVE_PLAYER_FROM_TEAM":
+          return saveTeams(teamActions.removePlayerFromTeam(teams, action.payload.teamId, action.payload.playerId));
+        
+        case "UPDATE_PLAYER_IN_TEAM":
+          return saveTeams(teamActions.updatePlayerInTeam(teams, action.payload.teamId, action.payload.playerId, action.payload.updates));
+        
+        case "DUPLICATE_TEAM":
+          return saveTeams(teamActions.duplicateTeam(teams, action.payload));
+        
+        case "LOAD_TEAMS":
+          return storageManager.loadTeams();
+        
+        case "SAVE_TEAMS":
+          return saveTeams(action.payload);
+        
+        case "CLEAR_TEAMS":
+          storageManager.clearTeams();
+          return [];
+        
+        default:
+          return teams;
+      }
+    } catch (error) {
+      console.error("Team action error:", error);
+      alert(error.message || "An error occurred with team management");
+      return teams;
+    }
+  }, storageManager.loadTeams());
+
   useEffect(() => {
     dispatch({type: "SET_GAME", payload: storageManager.loadGameState()});
   }, []);
 
   return (
     <div className="volley-mark">
-      {showMatchSettings &&  <MatchSettingsModal settings={state.settings} callAction={handleAction} />}
+      {showMatchSettings &&  <MatchSettingsModal teams={teams} settings={state.settings} callAction={handleAction} />}
       {showTimer && <Timer seconds={timer} callAction={handleAction} />}
-      <Team team={{...state.leftTeam}} side={SIDE.LEFT} callAction={handleAction} />
-      <MiddleToolbar settings = {state.settings} callAction={handleAction}/>
-      <Team team={{...state.rightTeam}} side={SIDE.RIGHT} callAction={handleAction}/>
+      <Team teamMatchInfo={{...state.leftTeam}} settings={state.settings} side={SIDE.LEFT} callAction={handleAction} />
+      <Team teamMatchInfo={{...state.rightTeam}} settings={state.settings} side={SIDE.RIGHT} callAction={handleAction}/>
+      <Toolbar leftTeam={state.leftTeam} rightTeam={state.rightTeam} settings={state.settings} callAction={handleAction}/>
     </div>
   );
 }

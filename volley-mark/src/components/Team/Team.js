@@ -1,12 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import { getLabel } from "../Utils/Labels";
+import { getLabel } from "../../Utils/Labels";
 import { SetsController } from "./SetsController";
-import { ScoreServeController } from "./ScoreServeController"
-import { TeamManager } from "./TeamManager";
-export function Team({team, side, callAction}) {
-  const setService = () => {
-    callAction("SET_SERVICE", side);
-  };
+import { ScoreServeController } from "../Score/ScoreServeController"
+export function Team({teamMatchInfo, side, callAction}) {
+  const team = teamMatchInfo.team;
 
   const handleNameChange = (newName) => {
     if (newName.trim() === "") {
@@ -21,10 +18,9 @@ export function Team({team, side, callAction}) {
     <div className="team-side">
       <div className={`name-set-row${side == "RIGHT" ? " reverse" : ""}`}>
         <TeamName name={team.name} changeName={handleNameChange}/>
-        <SetsController setsWon={team.setsWon} side={side} callAction={callAction} />
+        <SetsController setsWon={teamMatchInfo.setsWon} side={side} callAction={callAction} />
       </div>
-      <ScoreServeController score={team.score} hasService={team.hasService} setService={setService} side={side} callAction={callAction} />
-      <TeamManager positions={team.positions} side={side} usedTimeOuts={team.usedTimeOuts} callAction={callAction}/>
+      <ScoreServeController teamInfo={teamMatchInfo} side={side} callAction={callAction} />
     </div>
   );
 }
