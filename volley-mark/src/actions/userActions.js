@@ -58,7 +58,17 @@ const userActions = {
     }
   },
   updateTeamName: (gameState, {side, name}) => {
-    return updateTeamProperty(gameState, side, { name });
+    const teamKey = getTeamKey(side);
+    return {
+      ...gameState,
+      [teamKey]: {
+        ...gameState[teamKey],
+        team: {
+          ...gameState[teamKey].team,
+          name
+        }
+      }
+    };
   },
   incrementSets: (gameState, side) => {
     const teamKey = getTeamKey(side);
