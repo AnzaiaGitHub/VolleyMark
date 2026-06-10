@@ -1,8 +1,7 @@
-export function ServiceBall({hasService, setService}) {
+export const VolleyBallSVG = () => {
   return (
-    <div onClick={() => setService()}>
-      <svg
-        className={hasService ? 'service-ball to-serve' : 'service-ball'}
+    <svg
+        className="volley-ball"
         version="1.1"
         x="0px"
         y="0px"
@@ -72,6 +71,5 @@ export function ServiceBall({hasService, setService}) {
           </g>
         </g>
       </svg>
-    </div>
   );
-}
+};

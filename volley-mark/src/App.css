@@ -28,16 +28,17 @@ body{
   background: var(--dark-full);
   color: var(--light);
   font-family: Arial, Helvetica, sans-serif;
-  overflow-y: scroll;
+  overflow-y: hidden;
 }
 
 .volley-mark {
   padding: 0.5rem 1rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: flex-start;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  margin-bottom: 1vw;
 }
 
 .team-side {
@@ -47,12 +48,12 @@ body{
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  gap: 2vw;
+  gap: 3vw;
 }
 
 .name-set-row {
   width: 100%;
-  height: 10vw;
+  height: 6vw;
   padding: 0 0.5rem;
   display: flex;
   justify-content: flex-end;
@@ -61,7 +62,7 @@ body{
   font-size: 3vw;
 }
 .team-name {
-  font-size: 3vw;
+  font-size: 2vw;
 }
 
 .team-set-controller {
@@ -86,7 +87,8 @@ body{
   transition: 0.3s ease-in-out all;
 }
 .sets-won-card:active {
-  background-color: var(--neon2);
+  background-color: var(--neon2-full);
+  scale: 1.8;
 }
 .sets-team-handler {
   height: 100%;
@@ -102,18 +104,19 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: 0.3s ease-in-out all;
+  transition: 0.2s ease-in-out all;
 }
 .sets-btn:active {
   background-color: var(--neon3);
+  scale: 1.2;
 }
 
 .score-controller {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 26vw;
+  height: 24vw;
 }
 .score-mark {
   width: 30vw;
@@ -129,6 +132,7 @@ body{
 .score-mark:active {
   background-color: var(--light);
   color: var(--dark);
+  scale: 1.2;
 }
 .score-mark > div {
   width: 100%;
@@ -139,13 +143,22 @@ body{
   display: flex;
   justify-content: center;
 }
+.service-indicator {
+  width: 100%;
+  text-align: center;
+  color: var(--neon3);
+}
+.service-indicator.to-serve {
+  color: var(--neon2-full);
+}
 .service-decrement-container {
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  align-items: center;
 }
-.service-ball {
+.service-ball > svg {
   width: 5vw;
   height: 5vw;
   border-radius: 50%;
@@ -153,7 +166,7 @@ body{
   box-shadow: 0rem 0rem 1rem var(--neon3-full);
   transition: 0.2s ease-out all;
 }
-.service-ball.to-serve {
+.service-ball.to-serve > svg{
   fill: var(--neon2-full);
 }
 .score-decrement {
@@ -169,63 +182,168 @@ body{
   transition: 0.1s ease-out;
 }
 .score-decrement:active {
+  scale: 1.2;
   background-color: var(--neon2-full);
 }
 
-.team-rotation {
-  width: 25vw;
+.timer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40vw;
+  height: 40vw;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 5vw;
-  position: fixed;
-  bottom: 0;
-  border-radius: 2vw 2vw 0 0;
-  border: 0.3vw dashed var(--neon2-full);
-  border-bottom: none;
-  background-color: var(--dark-full);
-  transition: 0.2s ease-in-out all;
-}
-.team-rotation.left {
-  left: 15vw;
-}
-.team-rotation.right {
-  right: 15vw;
-}
-.team-rotation_show-btn {
-  text-align: center;
-  width: 100%;
-  height: 5vw;
-  display: flex;
   justify-content: center;
   align-items: center;
-  border-bottom: 0.3vw dashed var(--neon2-full);
+  gap: 4vw;
+  font-size: 10vw;
+  font-weight: bold;
+  text-align: center;
+  background-color: var(--dark);
+  color: var(--light);
+  border-radius: 50%;
+  z-index: 50;
 }
-.team-rotation > .rotation-list {
-  width: 20vw;
-  height: 20vw;
+.timer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border-top: 0.3vw solid var(--neon2-full);
+  animation: rotate 1s linear infinite;
+  z-index: -1;
+}
+.timer button:active {
+  background-color: var(--neon3);
+  scale: 1.1;
+}
+@keyframes rotate {
+  0%{
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(90deg); 
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.team-manager {
+  width: 40vw;
+  height: 100%;
+  padding: 0 0 1.5vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5vw;
+  background-color: var(--dark-full);
+  transition: 0.2s ease-in-out all;
+  overflow: hidden;
+}
+.rotation-manager {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2vw;
+}
+.rotation-manager .rotation-container {
+  width: 100%;
+  height: 30vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2vw;
+  align-items: center;
+  transition: 0.2s ease-in-out all;
+}
+.team-manager .rotation-container .rotation-list {
+  min-width: 25vw;
+  min-height: 25vw;
   border: 1px solid var(--neon3-full);
   font-size: 3vw;
   list-style: none;
   padding: 0;
   position: relative;
+  translate: 1rem;
+  background-color: var(--neon2);
+  transition: 0.2s ease-in-out all;
 }
-.rotation-list::before {
+.left .rotation-container .rotation-list {
+  translate: -1rem;
+}
+.rotation-container .rotation-btn_container {
+  height: fit-content;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.left .rotation-btn_container {
+  flex-direction: row-reverse;
+}
+.team-manager .rotation-container .rotation-btn_container > button {
+  width: 6vw;
+  height: 6vw;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s ease-in-out all;
+}
+.team-manager .rotation-container .rotation-btn_container > button:active {  
+  scale: 1.1;
+  background-color: var(--neon3);
+}
+.rotation-btn_container button svg {
+  width: 3vw;
+  height: 3vw;
+  fill: var(--neon2-full);
+  stroke: var(--neon2-full);
+}
+
+.rotation-btn_container button.rotate-forward > svg {
+  transform: rotateY(180deg);
+}
+
+.rotation-list.right::before, .rotation-list.left::after {
   content: 'NET';
   position: absolute;
-  color: var(--dark);
+  color: var(--neon2-full);
   text-align: center;
   font-size: 80%;
-  bottom: 100%;
-  left: -1px;
-  width: 100%;
-  border: 1px solid var(--neon3-full);
-  background-color: var(--neon3-full);
+  transform: rotate(-90deg);
+  translate: -13.8vw 10.6vw;
+  width: 25vw;
+  box-sizing: inherit;
+  border: 2px solid var(--neon3-full);
+  background-color: var(--dark);
+  letter-spacing: 0.5rem;
+  text-align: center;
+  padding: 0 1rem;
 }
-.rotation-list > li.rotation-item {
-  height: calc(100%/2);
-  width: calc(100%/3);
+.rotation-list.left::after {
+  translate: 13.8vw 10.6vw;
+  transform: rotate(90deg);
+}
+.rotation-container .rotation-list > li.rotation-item {
+  height: calc(100%/3);
+  width: calc(100%/2);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -233,21 +351,257 @@ body{
   border: 1px solid var(--neon3-full);
   position: absolute;
 }
-.rotation-item.p1{right: 0; bottom: 0;}
-.rotation-item.p2{right: 0; top: 0;}
-.rotation-item.p3{right: calc(100%/3); top: 0;}
-.rotation-item.p4{left: 0; top: 0;}
-.rotation-item.p5{left: 0; bottom: 0;}
-.rotation-item.p6{left: calc(100%/3); bottom: 0;}
-.team-rotation > .edit-rotation {
+.rotation-item.p1.right, .rotation-item.p4.left {right: 0; top: 0;}
+.rotation-item.p2.right, .rotation-item.p5.left {left: 0; top: 0;}
+.rotation-item.p3.right, .rotation-item.p6.left {top: calc(100%/3); left: 0;}
+.rotation-item.p4.right, .rotation-item.p1.left {left: 0; bottom: 0;}
+.rotation-item.p5.right, .rotation-item.p2.left {right: 0; bottom: 0;}
+.rotation-item.p6.right, .rotation-item.p3.left {top: calc(100%/3); right: 0;}
+.rotation-manager > .edit-rotation {
+  width: 100%;
   height: 100%;
-  padding: 0.7vw 1vw;
   font-size: 3vw;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  gap: 5vw;
+}
+.edit-rotation .rotation-list {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2vw;
+  font-size: 0.8rem;
+  list-style: none;
+}
+.edit-rotation .rotation-list > li {
+  min-width: 5vw;
+  height: 6vw;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--neon3-full);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s ease-in-out all;
+}
+.edit-rotation .rotation-list li.editing {
+  background-color: var(--light);
+  color: var(--dark);
+}
+.edit-rotation-btns {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.edit-rotation-btns .position-handler-btn {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s ease-in-out all;
+}
+.timeouts-container {
+  width: 100%;
+  height: 5vw;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 2vw;
+}
+.team-manager.left .timeouts-container {
+  flex-direction: row-reverse;
+}
+.team-manager .timeouts-container > button:active {
+  background-color: var(--neon3);
+  scale: 1.2;
+}
+
+.toolbar {
+  position: fixed;
+  height: 100vh;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10vh);
+  width: 100vw;
+  background-color: var(--dark-full);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1vw;
+  z-index: 10;
+  transition: 0.3s ease-out transform;
+}
+.toolbar.open {
+  transform: translateX(-50%) translateY(-100vh);
+}
+.toolbar .toggle-btn {
+  width: 100vw;
+  height: 10vh;
+  border-radius: 0.4rem 0.4rem 0 0;
+  border: 1px solid var(--neon3);
+  border-bottom: 1px dashed var(--neon3-full);
+  background-color: transparent;
+  color: var(--neon2-full);
+  font-size: 3vw;
+  cursor: pointer;
+  transition: 0.1s ease-in all;
+}
+.toolbar-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2vw;
+  overflow: hidden;
+}
+.toolbar-list {
+  padding: 9vw 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 3vw;
+  width: 6vw;
+  height: 100%;
+}
+.toolbar-list > .toolbar-item {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 6vw;
+  height: 6vw;
+  cursor: pointer;
+  transition: 0.2s ease-in-out all;
+}
+.toolbar-item > button {
+  width: 100%;
+  height: 100%;
+  padding: 1vw;
+  border-radius: 0.5rem;
+  border: 1px solid var(--neon3-full);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s ease-in-out all;
+}
+.toolbar-item > button:active {
+  background-color: var(--neon3);
+  scale: 1.2;
+}
+.toolbar-item > button > svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--neon2-full);
+  stroke: var(--neon2-full);
+}
+
+.match-settings-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  height: 90vh;
+  background-color: var(--dark-full);
+  border: 2px solid var(--neon2-full);
+  border-radius: 1vw;
+  box-shadow: 0rem 0rem 2rem var(--neon2-full);
+  padding: 2vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 1000;
+}
+.match-settings-modal .modal-settings-header {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.match-settings-modal .close-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 2vw;
+  cursor: pointer;
+  transition: 0.2s ease-in-out all;
+}
+.match-settings-modal .settings-view-tabs {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 0.5vw;
+  width: 100%;
+}
+.match-settings-modal .modal-settings-header button {
+  position: relative;
+  top: 2px;
+  padding: 0.5vw 1vw;
+  border: 1px solid var(--neon2-full);
+  border-bottom: 2px solid transparent;
+  background-color: transparent;
+  color: var(--neon2-full);
+  font-size: 1.5vw;
+  cursor: pointer;
+  transition: 0.2s ease-in-out all;
+  border-bottom: none;
+}
+.match-settings-modal .modal-settings-header button.active {
+  border-color:  var(--neon3-full);
+  color: var(--light);
+  border-bottom: 2px solid var(--dark-full);
+}
+.match-settings-modal .inner-view {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--neon3-full);
+  padding: 2vw;
+}
+.settings-form-container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4vh;
+}
+.deuce-settings {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2vw;
+  width: 100%;
+}
+.deuce-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1vw;
+}
+.deuce-item > label {
+  font-size: var(--sm);
+}
+.modal-actions {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 2vw;
 }
 
 button {

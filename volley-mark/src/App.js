@@ -1,187 +1,167 @@
-import { useReducer } from 'react';
-import { Team } from './components/Team';
+import { SIDE } from './Constants';
+
+import { useState, useReducer, useEffect } from 'react';
+
+import { userActions, validateTimeoutAvailable } from './actions/userActions';
+import { gameActions } from './actions/gameActions';
+import { teamActions } from './actions/teamActions';
+
+import { storageManager } from './Utils/storageManager';
 import './App.css';
-const SIDE = {
-  LEFT: 'LEFT',
-  RIGHT: 'RIGHT'
-};
+import { getDefaultGame } from './Utils/defaults';
 
-const getDefaultTeamInfo = (name, hasService) => {
-  return {
-    name: name,
-    hasService: hasService,
-    positions: ['1','2','3','4','5','6'].map(p => name.slice(-1) + p),
-    score: 0,
-    setsWon:0,
-    availableTimesOut: 2,
-  };
-};
+import { scoreController } from './controllers/scoreController';
+import { rotationController } from './controllers/rotationController';
 
-const getDefaultSettings = () => {
-  return {
-    maxSetPoints: 25,
-    deuce: {//if deuces are not allowed, the game must end when the first team reach the maxSetsPoints
-      allowed: true,
-      howMany: undefined
-    }
-  }
-};
-
-const userActions = {
-  setService: (gameState, teamSide) => {
-    let services = [true, false];
-
-    if(teamSide === SIDE.RIGHT) {
-      services = services.reverse();
-    }
-    return {
-      ...gameState,
-      leftTeam: {...gameState.leftTeam, hasService: services[0]},
-      rightTeam: {...gameState.rightTeam, hasService: services[1]}
-    }
-  },
-  updateTeamName: (gameState, {side, name}) => {
-    if(side === SIDE.LEFT) {
-      return {...gameState, leftTeam: {...gameState.leftTeam, name: name}};
-    } else {
-      return {...gameState, rightTeam: {...gameState.rightTeam, name: name}};
-    }
-  },
-  decrementScore: (gameState, side) => {
-    if(side === SIDE.LEFT) {
-      return {...gameState, leftTeam: {...gameState.leftTeam, score: Math.max(0, gameState.leftTeam.score - 1)}};
-    } else {
-      return {...gameState, rightTeam: {...gameState.rightTeam, score: Math.max(0, gameState.rightTeam.score - 1)}};
-    }
-  },
-  incrementSets: (gameState, side) => {
-    if(side === SIDE.LEFT) {
-      return {...gameState, leftTeam: {...gameState.leftTeam, setsWon: gameState.leftTeam.setsWon + 1}};
-    } else {
-      return {...gameState, rightTeam: {...gameState.rightTeam, setsWon: gameState.rightTeam.setsWon + 1}};
-    }
-  },
-  decrementSets: (gameState, side) => {
-    if(side === SIDE.LEFT) {
-      return {...gameState, leftTeam: {...gameState.leftTeam, setsWon: Math.max(0, gameState.leftTeam.setsWon - 1)}};
-    } else {
-      return {...gameState, rightTeam: {...gameState.rightTeam, setsWon: Math.max(0, gameState.rightTeam.setsWon - 1)}};
-    }
-  },
-  updatePositions: (gameState, {side, newPositions}) => {
-    if(side === SIDE.LEFT) {
-      return {
-        ...gameState,
-        leftTeam: {...gameState.leftTeam, positions: newPositions}
-      };
-    } else {
-      return {
-        ...gameState,
-        rightTeam: {...gameState.rightTeam, positions: newPositions}
-      };
-    }
-  },
-  rotateTeam: (gameState, side) => {
-    return gameActions.rotateTeam(gameState, side);
-  },
-  inverseRotateTeam: (gameState, side) => {
-    if(side === SIDE.LEFT) {
-      return {
-        ...gameState,
-        leftTeam: {...gameState.leftTeam, positions: [gameState.leftTeam.positions[gameState.leftTeam.positions.length - 1]].concat(gameState.leftTeam.positions.slice(0, -1))}
-      };
-    } else {
-      return {
-        ...gameState,
-        rightTeam: {...gameState.rightTeam, positions: [gameState.rightTeam.positions[gameState.rightTeam.positions.length - 1]].concat(gameState.rightTeam.positions.slice(0, -1))}
-      };
-    }
-  }
-};
-
-const gameActions = {
-  incrementScore: (gameState, side) => {
-    if(!teamWasServing(gameState, side)) {
-      gameState = userActions.setService(gameState, side);
-      gameState = gameActions.rotateTeam(gameState, side);
-    }
-
-    if(side === SIDE.LEFT) {
-      return {...gameState, leftTeam: { ...gameState.leftTeam, score: gameState.leftTeam.score + 1 }};
-    } else {
-      return { ...gameState, rightTeam: { ...gameState.rightTeam, score: gameState.rightTeam.score + 1}};
-    }
-  },
-  rotateTeam: (gameState, side) => {
-    if(side === SIDE.LEFT) {
-      return {
-        ...gameState,
-        leftTeam: {...gameState.leftTeam, positions: gameState.leftTeam.positions.slice(1).concat(gameState.leftTeam.positions[0])}
-      };
-    } else {
-      return {
-        ...gameState,
-        rightTeam: {...gameState.rightTeam, positions: gameState.rightTeam.positions.slice(1).concat(gameState.rightTeam.positions[0])}
-      };
-    }
-  }
-};
-
-const teamWasServing = (gameState, side) => {
-  if(side === SIDE.LEFT) {
-    return gameState.leftTeam.hasService;
-  } else {
-    return gameState.rightTeam.hasService;
-  }
-}
+import { Toolbar } from './components/Common/Toolbar';
+import { Team } from './components/Team/Team';
+import { MatchSettingsModal } from './components/SettingsModal/MatchSettingsModal';
+import { Timer } from './components/Common/Timer';
 
 function App() {
-  const getDefaultGame = () => {
-    return {
-      gameDate: Date.now(),
-      settings: getDefaultSettings(),
-      leftTeam: getDefaultTeamInfo('Team A', true),
-      rightTeam: getDefaultTeamInfo('Team B', false)
-    };
-  };
-
   const handleAction = (type, value) => {
     dispatch({type:type, payload: value});
   };
 
+  const [showMatchSettings, setShowMatchSettings] = useState(false);
+  const [showTimer, setShowTimer] = useState(false);
+  const [timer, setTimer] = useState(0);
+
   const [state, dispatch] = useReducer((state, action) => {
+    const savedGame = (stateToReturn) => {
+      storageManager.saveGameState(stateToReturn);
+      return stateToReturn;
+    };
+
     switch(action.type) {
       case "SET_SERVICE":
-        return userActions.setService(state, action.payload)
+        return savedGame(userActions.setService(state, action.payload));
       case "UPDATE_TEAM_NAME":
-        return userActions.updateTeamName(state, action.payload);
-
+        return savedGame(userActions.updateTeamName(state, action.payload));
+      case "USE_TIMEOUT":
+        const {valid, message} = validateTimeoutAvailable(state, action.payload);
+        if(!valid) {
+          alert(message);
+          return state;
+        }
+        setTimer(30);
+        setShowTimer(true);
+        return savedGame(userActions.useTimeOut(state, action.payload));
+      case "STOP_TIMER":
+        setTimer(0);
+        setShowTimer(false);
+        return state;
       case "INCREMENT_SCORE":
-        return gameActions.incrementScore(state, action.payload);
+        const newState = scoreController.increment(state, action.payload);
+        const winner = gameActions.validateWinConditions(newState);
+        if(winner) {
+          return savedGame(userActions.acceptWinSet(newState, winner));
+        }
+        return savedGame(newState);
       case "DECREMENT_SCORE":
-        return userActions.decrementScore(state, action.payload);
-      case "INCREMENT_SETS":
-        return userActions.incrementSets(state, action.payload);
-      case "DECREMENT_SETS":
-        return userActions.decrementSets(state, action.payload);
-      case "UPDATE_POSITIONS":
-        return userActions.updatePositions(state, action.payload);
+        return savedGame(scoreController.decrement(state, action.payload));
 
+      case "INCREMENT_SETS":
+        return savedGame(userActions.incrementSets(state, action.payload));
+      case "DECREMENT_SETS":
+        return savedGame(userActions.decrementSets(state, action.payload));
+
+      case "UPDATE_POSITIONS":
+        return savedGame(rotationController.updatePositions(state, action.payload));
+      case "ROTATE":
+        return savedGame(rotationController.rotate(state, action.payload));
+      case "INVERSE_ROTATE":
+        return savedGame(rotationController.inverseRotate(state, action.payload));
+
+      case "RESTART_GAME":
+        return userActions.restartGame(state, action.payload);
+      case "CHANGE_SIDES":
+        return savedGame(userActions.changeSides(state));
+      case "OPEN_MATCH_SETTINGS":
+        setShowMatchSettings(true);
+        return state;
+      case "CLOSE_MATCH_SETTINGS":
+        setShowMatchSettings(false);
+        return state;
+      case "UPDATE_MATCH_SETTINGS":
+        return savedGame(userActions.updateMatchSettings(state, action.payload));
+      case "RESET_MATCH_SETTINGS":
+        return userActions.resetMatchSettings(state);
+
+      case "TEAM_WIN_SET":
+        return savedGame(userActions.acceptWinSet(state, action.payload));
+
+      case "SET_GAME":
+        return action.payload;
       default:
         return state;
     }
-    
   }, {
     //return default
     ...getDefaultGame()
   });
 
+  const [teams, dispatchTeams] = useReducer((teams, action) => {
+    const saveTeams = (teamsToReturn) => {
+      storageManager.saveTeams(teamsToReturn);
+      return teamsToReturn;
+    };
+
+    try {
+      switch(action.type) {
+        case "ADD_TEAM":
+          return saveTeams(teamActions.addTeam(teams, action.payload));
+        
+        case "UPDATE_TEAM":
+          return saveTeams(teamActions.updateTeam(teams, action.payload.teamId, action.payload.updates));
+        
+        case "DELETE_TEAM":
+          return saveTeams(teamActions.deleteTeam(teams, action.payload));
+        
+        case "ADD_PLAYER_TO_TEAM":
+          return saveTeams(teamActions.addPlayerToTeam(teams, action.payload.teamId, action.payload.player));
+        
+        case "REMOVE_PLAYER_FROM_TEAM":
+          return saveTeams(teamActions.removePlayerFromTeam(teams, action.payload.teamId, action.payload.playerId));
+        
+        case "UPDATE_PLAYER_IN_TEAM":
+          return saveTeams(teamActions.updatePlayerInTeam(teams, action.payload.teamId, action.payload.playerId, action.payload.updates));
+        
+        case "DUPLICATE_TEAM":
+          return saveTeams(teamActions.duplicateTeam(teams, action.payload));
+        
+        case "LOAD_TEAMS":
+          return storageManager.loadTeams();
+        
+        case "SAVE_TEAMS":
+          return saveTeams(action.payload);
+        
+        case "CLEAR_TEAMS":
+          storageManager.clearTeams();
+          return [];
+        
+        default:
+          return teams;
+      }
+    } catch (error) {
+      console.error("Team action error:", error);
+      alert(error.message || "An error occurred with team management");
+      return teams;
+    }
+  }, storageManager.loadTeams());
+
+  useEffect(() => {
+    dispatch({type: "SET_GAME", payload: storageManager.loadGameState()});
+  }, []);
+
   return (
     <div className="volley-mark">
-      <Team team={state.leftTeam} side="LEFT" callAction={handleAction} />
-      <Team team={state.rightTeam} side="RIGHT" callAction={handleAction}/>
+      {showMatchSettings &&  <MatchSettingsModal teams={teams} settings={state.settings} callAction={handleAction} />}
+      {showTimer && <Timer seconds={timer} callAction={handleAction} />}
+      <Team teamMatchInfo={{...state.leftTeam}} settings={state.settings} side={SIDE.LEFT} callAction={handleAction} />
+      <Team teamMatchInfo={{...state.rightTeam}} settings={state.settings} side={SIDE.RIGHT} callAction={handleAction}/>
+      <Toolbar leftTeam={state.leftTeam} rightTeam={state.rightTeam} settings={state.settings} callAction={handleAction}/>
     </div>
   );
 }
-
 export default App;
