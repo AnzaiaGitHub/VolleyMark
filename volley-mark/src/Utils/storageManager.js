@@ -1,17 +1,20 @@
-import { LOCAL_STORAGE_GAME_KEY, LOCAL_STORAGE_TEAMS_KEY }  from "../Constants.js";
-import { getDefaultGame } from "./defaults.js";
+import { LOCAL_STORAGE_GAME_KEY, LOCAL_STORAGE_TEAMS_KEY } from "../Constants.js";
 import { getLabel } from "./Labels.js";
-import { getLatestStorageVersion } from "./defaults.js";
+import { Game, getLatestStorageVersion } from "../domain/Game";
+import { TeamLibrary } from "../domain/TeamLibrary";
 
-export const storageManager = {  
+const COMPATIBLE_VERSIONS = ["1.1.1", "1.2.0"];
+
+export const storageManager = {
   clearGameState: () => {
     localStorage.removeItem(LOCAL_STORAGE_GAME_KEY);
   },
   saveGameState: (gameState) => {
-    localStorage.setItem(LOCAL_STORAGE_GAME_KEY, JSON.stringify(gameState));
+    const payload = gameState instanceof Game ? gameState.toJSON() : gameState;
+    localStorage.setItem(LOCAL_STORAGE_GAME_KEY, JSON.stringify(payload));
   },
   loadGameState: () => {
-    let defaultGameState = getDefaultGame();
+    let defaultGameState = Game.defaults();
     const gameState = localStorage.getItem(LOCAL_STORAGE_GAME_KEY);
 
     if (!gameState) {
@@ -19,28 +22,37 @@ export const storageManager = {
     }
 
     const checkVersionCompatibility = (gameInfo) => {
-      if(gameInfo.STORAGE_VERSION === getLatestStorageVersion()) {
+      if (COMPATIBLE_VERSIONS.includes(gameInfo.STORAGE_VERSION)) {
         return true;
       }
 
-      window.alert(getLabel("incompatible_game_version") || "The saved game version is not compatible with the current app version. The saved game will be deleted.");
+      window.alert(
+        getLabel("incompatible_game_version") ||
+          "The saved game version is not compatible with the current app version. The saved game will be deleted."
+      );
       localStorage.removeItem(LOCAL_STORAGE_GAME_KEY);
       return false;
-    }
+    };
 
     const getExistentGameInfo = (gameInfo) => {
-      if(!gameInfo || !gameInfo.leftTeam || !gameInfo.rightTeam || !gameInfo.STORAGE_VERSION) {
+      if (!gameInfo || !gameInfo.leftTeam || !gameInfo.rightTeam || !gameInfo.STORAGE_VERSION) {
         return "No game information available.";
       }
 
+      const leftName = gameInfo.leftTeam.team?.name ?? gameInfo.leftTeam.name ?? "Left";
+      const rightName = gameInfo.rightTeam.team?.name ?? gameInfo.rightTeam.name ?? "Right";
+      const leftScore = gameInfo.leftTeam.score ?? 0;
+      const rightScore = gameInfo.rightTeam.score ?? 0;
+      const leftSets = gameInfo.leftTeam.setsWon ?? 0;
+      const rightSets = gameInfo.rightTeam.setsWon ?? 0;
+
       return [
-        gameInfo.leftTeam.name + " - " + gameInfo.rightTeam.name,
-        "Sets: " + gameInfo.leftTeam.setsWon + " - " + gameInfo.rightTeam.setsWon,
-        "Score: " +gameInfo.leftTeam.score + " - " + gameInfo.rightTeam.score,
+        leftName + " - " + rightName,
+        "Sets: " + leftSets + " - " + rightSets,
+        "Score: " + leftScore + " - " + rightScore,
         "Date: " + new Date(gameInfo.gameDate).toLocaleString(),
-      ]
-        .join("\n");
-    }
+      ].join("\n");
+    };
 
     let parsedGame;
     try {
@@ -51,8 +63,17 @@ export const storageManager = {
     }
 
     const existentGameInfo = getExistentGameInfo(parsedGame);
-    if(checkVersionCompatibility(parsedGame) && window.confirm(getLabel("there_is_saved_game")+":\n\n" + existentGameInfo + "\n\n"+getLabel("want_to_restore_it"))) {
-      defaultGameState = parsedGame;
+    if (
+      checkVersionCompatibility(parsedGame) &&
+      window.confirm(
+        getLabel("there_is_saved_game") +
+          ":\n\n" +
+          existentGameInfo +
+          "\n\n" +
+          getLabel("want_to_restore_it")
+      )
+    ) {
+      defaultGameState = Game.fromJSON(parsedGame);
     } else {
       alert(getLabel("game_not_restored"));
       localStorage.removeItem(LOCAL_STORAGE_GAME_KEY);
@@ -63,19 +84,21 @@ export const storageManager = {
   loadTeams: () => {
     const teamsState = localStorage.getItem(LOCAL_STORAGE_TEAMS_KEY);
     if (!teamsState) {
-      return [];
+      return new TeamLibrary([]);
     }
     try {
-      return JSON.parse(teamsState);
+      return TeamLibrary.fromJSON(JSON.parse(teamsState));
     } catch (e) {
       console.error("Error parsing teams state from localStorage:", e);
-      return [];
+      return new TeamLibrary([]);
     }
   },
   saveTeams: (teams) => {
-    localStorage.setItem(LOCAL_STORAGE_TEAMS_KEY, JSON.stringify(teams));
+    const payload = teams instanceof TeamLibrary ? teams.toJSON() : teams;
+    localStorage.setItem(LOCAL_STORAGE_TEAMS_KEY, JSON.stringify(payload));
   },
   clearTeams: () => {
     localStorage.removeItem(LOCAL_STORAGE_TEAMS_KEY);
-  }
-}
+  },
+  getLatestStorageVersion,
+};

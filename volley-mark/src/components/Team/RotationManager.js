@@ -1,28 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getLabel } from "../../Utils/Labels";
 import { crossedArrowsSVG } from "../../icons/crossedArrows";
 import { restartSVG } from "../../icons/restart";
+import { BottomSheet } from "../Common/BottomSheet";
+
 export function RotationManager({ team, side, callAction }) {
-  const [showEditPositions, setShowEditPosition] = useState(false);
-  const positions = team.positions;
+  const [showEditSheet, setShowEditSheet] = useState(false);
   const [editingPosition, setEditingPosition] = useState(0);
+  const positions = team.positions;
+
   const updatePositions = (newPositions) => {
-    setShowEditPosition(false);
+    setShowEditSheet(false);
     callAction("UPDATE_POSITIONS", {side: side, newPositions: newPositions});
   };
 
   const editPositions = (positionToEdit) => {
     setEditingPosition(positionToEdit);
-    setShowEditPosition(true);
+    setShowEditSheet(true);
   };
 
   return (
     <div className="rotation-manager">
-      {
-        showEditPositions ?
-        <EditRotation positions={positions} updatePositions={updatePositions} callAction={callAction} positionToEdit={editingPosition}/> :
-        <Rotation positions={positions} editPositions={editPositions} side={side} callAction={callAction} />
-      }
+      <Rotation positions={positions} editPositions={editPositions} side={side} callAction={callAction} />
+      {showEditSheet && (
+        <RotationEditSheet
+          positions={positions}
+          positionToEdit={editingPosition}
+          onSave={updatePositions}
+          onClose={() => setShowEditSheet(false)}
+        />
+      )}
     </div>
   );
 }
@@ -67,89 +74,102 @@ function Rotation({ positions, editPositions, side, callAction }) {
   );
 }
 
-function EditRotation({ positions, updatePositions, positionToEdit }) {
+function RotationEditSheet({ positions, positionToEdit, onSave, onClose }) {
   const [editedRotation, setEditedRotation] = useState(positions);
   const [positionIndex, setPositionIndex] = useState(positionToEdit);
   const [positionValue, setPositionValue] = useState(positions[positionToEdit]);
+  const inputRef = useRef(null);
 
-  const handleBlur = () => {
-    if(positionValue.trim() === '') {
-      setPositionValue(positions[positionIndex]);
-      return;
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
     }
-    setEditedRotation(prev => {
-      const newRotation = [...prev];
-      newRotation[positionIndex] = positionValue.trim();
-      return newRotation;
-    });
+  }, [positionIndex]);
+
+  const commitValue = () => {
+    const trimmed = positionValue.trim();
+    if (trimmed === "") {
+      setPositionValue(editedRotation[positionIndex]);
+      return editedRotation;
+    }
+    const newRotation = [...editedRotation];
+    newRotation[positionIndex] = trimmed;
+    setEditedRotation(newRotation);
+    return newRotation;
   };
 
   const handleSave = () => {
-    handleBlur();
-    updatePositions(editedRotation);
+    const latest = commitValue();
+    onSave(latest);
   };
 
   const handleNextPosition = () => {
-    handleBlur();
-    if(positionIndex < 5) {
-      setPositionIndex(positionIndex + 1);
-      setPositionValue(positions[positionIndex + 1]);
-    } else {
-      setPositionIndex(0);
-      setPositionValue(positions[0]);
-    }
+    const latest = commitValue();
+    setEditedRotation(latest);
+    const nextIndex = positionIndex < 5 ? positionIndex + 1 : 0;
+    setPositionIndex(nextIndex);
+    setPositionValue(latest[nextIndex]);
   };
 
   const handleLastPosition = () => {
-    handleBlur();
-    if(positionIndex > 0) {
-      setPositionIndex(positionIndex - 1);
-      setPositionValue(positions[positionIndex - 1]);
-    } else {
-      setPositionIndex(5);
-      setPositionValue(positions[5]);
-    }
+    const latest = commitValue();
+    setEditedRotation(latest);
+    const prevIndex = positionIndex > 0 ? positionIndex - 1 : 5;
+    setPositionIndex(prevIndex);
+    setPositionValue(latest[prevIndex]);
   };
 
   const handleIndexClick = (index) => {
-    handleBlur();
+    const latest = commitValue();
+    setEditedRotation(latest);
     setPositionIndex(index);
-    setPositionValue(positions[index]);
-  }
+    setPositionValue(latest[index]);
+  };
 
   return (
-    <div className="edit-rotation">
-      <ul className="rotation-list">
-        {editedRotation.map((position, index) => (
-          <li key={index} className={`rotation-item${index === positionIndex ? " editing" : ""}`} onClick={() => handleIndexClick(index)}>
-            <span className="position-label">{position}</span>
-          </li>
-        ))}
-      </ul>
-      <label htmlFor="rotation">{(getLabel("edit_position") || "Edit Position") + " " + (positionIndex + 1)}:
-      <input
-        name="rotation"
-        type="text"
-        value={positionValue}
-        onChange={(e) => setPositionValue(e.target.value)}
-        onBlur={handleBlur}
-        autoFocus
-        className="edit-positions-input"
-        />
-      </label>
-      <div className="edit-rotation-btns">
-        <button onClick={handleLastPosition} className="position-handler-btn">
-          {getLabel("last") || "Last"}
-        </button>
-        <button onClick={handleNextPosition} className="position-handler-btn">
-          {getLabel("next") || "Next"}
-        </button>
-        <button
-          className="save-positions-btn"
-          onClick={handleSave}>
-          {(getLabel("save") || "Save Positions")}
-        </button>
+    <BottomSheet
+      isOpen
+      title={(getLabel("edit_position") || "Edit Position") + " " + (positionIndex + 1)}
+      primaryLabel={getLabel("save") || "Save"}
+      secondaryLabel={getLabel("cancel") || "Cancel"}
+      onPrimary={handleSave}
+      onSecondary={onClose}
+      onClose={onClose}
+    >
+      <div className="edit-rotation-sheet">
+        <ul className="rotation-list">
+          {editedRotation.map((position, index) => (
+            <li
+              key={index}
+              className={`rotation-item${index === positionIndex ? " editing" : ""}`}
+              onClick={() => handleIndexClick(index)}
+            >
+              <span className="position-label">{position}</span>
+            </li>
+          ))}
+        </ul>
+        <label htmlFor="rotation-sheet-input">
+          {(getLabel("edit_position") || "Edit Position") + " " + (positionIndex + 1)}:
+          <input
+            id="rotation-sheet-input"
+            ref={inputRef}
+            name="rotation"
+            type="text"
+            value={positionValue}
+            onChange={(e) => setPositionValue(e.target.value)}
+            className="edit-positions-input"
+          />
+        </label>
+        <div className="edit-rotation-btns">
+          <button type="button" onClick={handleLastPosition} className="position-handler-btn">
+            {getLabel("last") || "Last"}
+          </button>
+          <button type="button" onClick={handleNextPosition} className="position-handler-btn">
+            {getLabel("next") || "Next"}
+          </button>
+        </div>
       </div>
-    </div>
+    </BottomSheet>
   );
 }

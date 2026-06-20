@@ -3,26 +3,16 @@ import { useState } from "react";
 import { AdminTeamsView } from "./AdminTeamsView";
 import { MatchSettingsView } from "./MatchSettingsView";
 
-/**
- * settings data
- * settings: {
- *   deuce: object {
- *    allowed: boolean, //default true
- *    howMany: undefined | number //default undefined (meaning no limit)
- *   }
- *   maxSetPoints: number, //default 25
- *   maxSets: number, //default 5
- *   maxTimeOuts: number  //default 2
- * }
- */
-
-export function MatchSettingsModal({settings, teams, callAction}) {
+export function MatchSettingsModal({settings, teams, callAction, callTeamAction}) {
   const [newSettings, setNewSettings] = useState(settings);
   const [newTeams, setNewTeams] = useState(teams || []);
   const [activeView, setActiveView] = useState({id: "matchSettings", label: getLabel("match_settings") || "Match Settings"});
 
-  const handleSave = (newSettings) => {
-    callAction("UPDATE_MATCH_SETTINGS", newSettings);
+  const handleSave = (settingsToSave) => {
+    callAction("UPDATE_MATCH_SETTINGS", settingsToSave);
+    if (callTeamAction) {
+      callTeamAction("SAVE_TEAMS", newTeams);
+    }
     handleClose();
   }
 
