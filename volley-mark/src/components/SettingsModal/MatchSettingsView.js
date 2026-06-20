@@ -1,10 +1,11 @@
 import { getLabel } from "../../Utils/Labels";
 import { useEffect, useState } from "react";
+import { useInputSheet } from "../Common/InputSheetProvider";
 
 export function MatchSettingsView({newSettings, setNewSettings}) {
   return(
     <div className="settings-form-container inner-view">
-      <NumberInput
+      <NumberInputRow
         label={getLabel("max_sets") || "Max Sets"}
         min={1}
         max={10}
@@ -14,17 +15,17 @@ export function MatchSettingsView({newSettings, setNewSettings}) {
         }}
       />
 
-      <NumberInput
+      <NumberInputRow
         label={getLabel("max_set_points") || "Max Set Points"}
         min={1}
-        max={25}
+        max={99}
         value={newSettings.maxSetPoints}
         onChange={(value) => {
           setNewSettings({...newSettings, maxSetPoints: value});
         }}
       />
 
-      <NumberInput
+      <NumberInputRow
         label={getLabel("max_timeouts") || "Max Timeouts"}
         min={0}
         max={5}
@@ -39,15 +40,27 @@ export function MatchSettingsView({newSettings, setNewSettings}) {
   );
 };
 
+function NumberInputRow({label, value, min, max, onChange}) {
+  const { openNumberSheet } = useInputSheet();
 
+  const handleOpen = (event) => {
+    openNumberSheet({
+      title: label,
+      value,
+      min,
+      max,
+      triggerElement: event.currentTarget,
+      onSave: onChange,
+    });
+  };
 
-function NumberInput({label, value, min, max, onChange}) {
   return (
     <div className="number-input">
-      <label>{label}</label>
-      <input type="number" min={min} max={max} value={value} onChange={(e) => {
-        onChange(parseInt(e.target.value, 10));
-      }} />
+      <span>{label}</span>
+      <button type="button" className="editable-value-row" onClick={handleOpen}>
+        <span className="value-label">{label}</span>
+        <span className="value-display">{value}</span>
+      </button>
     </div>
   );
 }
@@ -60,7 +73,7 @@ function DeuceSettings({settings, setNewSettings}) {
       ...settings,
       deuce: deuce
     });
-  }, [deuce]);
+  }, [deuce, setNewSettings]);
 
   return (
     <div className="deuce-settings">

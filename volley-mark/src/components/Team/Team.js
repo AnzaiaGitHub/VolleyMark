@@ -1,7 +1,9 @@
-import { useEffect, useState, useRef } from "react";
+import { useRef } from "react";
 import { getLabel } from "../../Utils/Labels";
+import { useInputSheet } from "../Common/InputSheetProvider";
 import { SetsController } from "./SetsController";
 import { ScoreServeController } from "../Score/ScoreServeController"
+
 export function Team({teamMatchInfo, side, callAction}) {
   const team = teamMatchInfo.team;
 
@@ -11,7 +13,7 @@ export function Team({teamMatchInfo, side, callAction}) {
       return;
     }
 
-    callAction("UPDATE_TEAM_NAME", { side, name: newName });
+    callAction("UPDATE_TEAM_NAME", { side, name: newName.trim() });
   };
 
   return (
@@ -26,37 +28,28 @@ export function Team({teamMatchInfo, side, callAction}) {
 }
 
 function TeamName({name, changeName}) {
-  const [teamInputName, setTeamInputName] = useState(name);
-  const [showNameInput, setShowNameInput] = useState(false);
+  const { openTextSheet } = useInputSheet();
+  const triggerRef = useRef(null);
 
-  const inputRef = useRef(null);
+  const handleEdit = () => {
+    openTextSheet({
+      title: getLabel("team_name") || "Team Name",
+      value: name,
+      triggerElement: triggerRef.current,
+      onSave: (newName) => {
+        changeName(newName);
+      },
+    });
+  };
 
-  useEffect(() => {
-    setTeamInputName(name);
-  }, [name]);
-
-  useEffect(() => {
-    if (showNameInput && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [showNameInput]);
   return (
     <div className="team-name">
-      {showNameInput ? (
-        <input
-          type="text"
-          value={teamInputName}
-          onChange={(e) => setTeamInputName(e.target.value)}
-          onBlur={() => {
-            changeName(teamInputName);
-            setShowNameInput(false);
-          }}
-          ref={inputRef}
-        />
-      ) : (
-        <h2 onClick={() => setShowNameInput(true)}>{name}</h2>
-      )}
+      <h2 ref={triggerRef} tabIndex={0} onClick={handleEdit} onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleEdit();
+        }
+      }}>{name}</h2>
     </div>
   );
 }

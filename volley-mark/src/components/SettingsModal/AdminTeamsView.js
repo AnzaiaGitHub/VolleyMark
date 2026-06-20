@@ -1,10 +1,11 @@
 import { getLabel } from "../../Utils/Labels";
-import { getDefaultTeam } from "../../Utils/defaults";
+import { Team } from "../../domain/Team";
 import { useState } from "react";
+import { useInputSheet } from "../Common/InputSheetProvider";
 
 export function AdminTeamsView({teams, setNewTeams}) {
   const handleAddTeam = () => {
-    setNewTeams([...teams, getDefaultTeam(getLabel("new_team") || "New Team")]);
+    setNewTeams([...teams, Team.createDefault(getLabel("new_team") || "New Team").toJSON()]);
   };
 
   const handleUpdateTeam = (updatedTeam) => {
@@ -33,13 +34,13 @@ function TeamsList({teams, handleUpdateTeam}) {
       !teamDetail &&
       <ul className="teams-list">
         {teams.map(team => (
-          <TeamRow team={team} editTeam={() => setEditingTeam(team)} detailTeam={() => setTeamDetail(team)} />
+          <TeamRow key={team.id} team={team} editTeam={() => setEditingTeam(team)} detailTeam={() => setTeamDetail(team)} />
         ))}
       </ul>
     }
     {
       editingTeam &&
-      <EditTeam key={editingTeam.id} team={editingTeam} handleUpdateTeam={handleUpdateTeam} />
+      <EditTeam key={editingTeam.id} team={editingTeam} handleUpdateTeam={handleUpdateTeam} onDone={() => setEditingTeam(null)} />
     }
     {
       teamDetail &&
@@ -69,22 +70,56 @@ function TeamDetail({team, editTeam}) {
   );
 }
 
-function EditTeam({team, handleUpdateTeam}) {
+function EditTeam({team, handleUpdateTeam, onDone}) {
+  const { openTextSheet } = useInputSheet();
   const [newName, setNewName] = useState(team.name);
-  const [newPlayers, setNewPlayers] = useState(team.players);
+  const [playersText, setPlayersText] = useState(team.players.map(p => p.tshirt).join(", "));
+
+  const parsePlayers = (text) => {
+    return text.split(",").map((p, index) => ({
+      tshirt: p.trim(),
+      id: index + 1,
+    })).filter(p => p.tshirt !== "");
+  };
+
   const handleSave = () => {
     if (newName.trim() === "") {
       alert(getLabel("name_cannot_be_empty"));
       return;
     }
-    const players = newPlayers.split(',').map(p => p.trim()).filter(p => p !== "");
-    handleUpdateTeam({...team, name: newName, players: players});
+    const players = parsePlayers(playersText);
+    handleUpdateTeam({...team, name: newName.trim(), players});
+    onDone();
+  };
+
+  const openNameSheet = (event) => {
+    openTextSheet({
+      title: getLabel("team_name") || "Team Name",
+      value: newName,
+      triggerElement: event.currentTarget,
+      onSave: (value) => setNewName(value.trim()),
+    });
+  };
+
+  const openPlayersSheet = (event) => {
+    openTextSheet({
+      title: getLabel("players") || "Players",
+      value: playersText,
+      triggerElement: event.currentTarget,
+      onSave: (value) => setPlayersText(value),
+    });
   };
 
   return (
     <div className="edit-team">
-      <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} autoFocus />
-      <input type="text" value={newPlayers} onChange={(e) => setNewPlayers(e.target.value)} />
+      <button type="button" className="editable-value-row" onClick={openNameSheet}>
+        <span className="value-label">{getLabel("team_name") || "Team Name"}</span>
+        <span className="value-display">{newName}</span>
+      </button>
+      <button type="button" className="editable-value-row" onClick={openPlayersSheet}>
+        <span className="value-label">{getLabel("players") || "Players"}</span>
+        <span className="value-display">{playersText || "—"}</span>
+      </button>
       <button onClick={handleSave}>{getLabel("save") || "Save"}</button>
     </div>
   );
