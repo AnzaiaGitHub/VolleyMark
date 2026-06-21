@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { getLabel } from "../../Utils/Labels";
 import { crossedArrowsSVG } from "../../icons/crossedArrows";
 import { restartSVG } from "../../icons/restart";
+import { VolleyBallSVG } from "../../icons/volleyBall";
 import { BottomSheet } from "../Common/BottomSheet";
 
 export function RotationManager({ team, side, callAction }) {
@@ -21,7 +22,7 @@ export function RotationManager({ team, side, callAction }) {
 
   return (
     <div className="rotation-manager">
-      <Rotation positions={positions} editPositions={editPositions} side={side} callAction={callAction} />
+      <Rotation positions={positions} editPositions={editPositions} side={side} callAction={callAction} hasService={team.hasService} />
       {showEditSheet && (
         <RotationEditSheet
           positions={positions}
@@ -34,7 +35,7 @@ export function RotationManager({ team, side, callAction }) {
   );
 }
   
-function Rotation({ positions, editPositions, side, callAction }) {
+function Rotation({ positions, editPositions, side, callAction, hasService }) {
   const rotate = () => {
     callAction("ROTATE", side);
   };
@@ -59,7 +60,8 @@ function Rotation({ positions, editPositions, side, callAction }) {
           </li>
         ))}
       </ul>
-      <div className="rotation-btn_container">
+      <div className={`rotation-btn_container ${hasService ? " serve" : ""}`}>
+        {VolleyBallSVG()}
         <button className="rotate-forward" onClick={rotate}>
           {restartSVG()}
         </button>
