@@ -2,8 +2,9 @@ import { getLabel } from "../../Utils/Labels";
 import { Team } from "../../domain/Team";
 import { useState } from "react";
 import { useInputSheet } from "../Common/InputSheetProvider";
+import { SIDE } from "../../Constants";
 
-export function AdminTeamsView({teams, setNewTeams}) {
+export function AdminTeamsView({teams, setNewTeams, playTeamOnSide}) {
   const handleAddTeam = () => {
     setNewTeams([...teams, Team.createDefault(getLabel("new_team") || "New Team").toJSON()]);
   };
@@ -13,19 +14,37 @@ export function AdminTeamsView({teams, setNewTeams}) {
     setNewTeams(updatedTeams);
   };
 
+  const handleDeleteTeam = (teamToDelete) => {
+    const updatedTeams = teams.filter(team => team.id !== teamToDelete.id);
+    setNewTeams(updatedTeams);
+  };
+
+  const handlePlayTeam = (teamAndSide) => {
+    playTeamOnSide(teamAndSide);
+  };
+
+  const noTeams = !teams || teams.length === 0;
+
   return (
     <div className="admin-teams-view inner-view">
-      <h2>{getLabel("manage_teams") || "Manage Teams"}</h2>
-      {teams && <TeamsList teams={teams} handleUpdateTeam={handleUpdateTeam} />}
-      {(!teams || (teams && teams.length === 0)) && <p>{getLabel("no_teams_available") || "No teams available. Please add a team."}</p>}
-      <button onClick={handleAddTeam}>{getLabel("add_default_team") || "Add Default Team"}</button>
+      <h2>{getLabel("teams") || "Teams"}</h2>
+      {teams && <TeamsList teams={teams} handleUpdateTeam={handleUpdateTeam} handleDeleteTeam={handleDeleteTeam} handlePlayTeam={handlePlayTeam} />}
+      {noTeams && <p>{getLabel("no_teams_available") || "No teams available. Please add a team."}</p>}
+      <button className="add-team-button" onClick={handleAddTeam}>
+        {getLabel("add_default_team") || "Add Default Team"}
+      </button>
     </div>
   );
 };
 
-function TeamsList({teams, handleUpdateTeam}) {
+function TeamsList({teams, handleUpdateTeam, handleDeleteTeam, handlePlayTeam}) {
   const [editingTeam, setEditingTeam] = useState(null);
   const [teamDetail, setTeamDetail] = useState(null);
+
+  const onDone = () => {
+    setEditingTeam(null);
+    setTeamDetail(null);
+  };
 
   return (
     <>
@@ -34,43 +53,56 @@ function TeamsList({teams, handleUpdateTeam}) {
       !teamDetail &&
       <ul className="teams-list">
         {teams.map(team => (
-          <TeamRow key={team.id} team={team} editTeam={() => setEditingTeam(team)} detailTeam={() => setTeamDetail(team)} />
+          <TeamRow key={team.id} team={team} editTeam={() => setEditingTeam(team)} detailTeam={() => setTeamDetail(team)} deleteTeam={handleDeleteTeam} playTeamOnSide={handlePlayTeam} />
         ))}
       </ul>
     }
     {
       editingTeam &&
-      <EditTeam key={editingTeam.id} team={editingTeam} handleUpdateTeam={handleUpdateTeam} onDone={() => setEditingTeam(null)} />
+      <EditTeam key={editingTeam.id} team={editingTeam} handleUpdateTeam={handleUpdateTeam} onDone={onDone} cancelEdit={() => setEditingTeam(null)} />
     }
     {
       teamDetail &&
       !editingTeam &&
-      <TeamDetail key={teamDetail.id} team={teamDetail} editTeam={() => setEditingTeam(teamDetail)} />
+      <TeamDetail key={teamDetail.id} team={teamDetail} editTeam={() => setEditingTeam(teamDetail)} exitDetail={onDone} />
     }
     </>
   );
 }
 
-function TeamRow({team, detailTeam, editTeam}) {
+function TeamRow({team, detailTeam, editTeam, deleteTeam, playTeamOnSide}) {
+
+  const handlePlayTeam = () => {
+    const chosenSide = window.confirm(getLabel("play_on_left_side") || "Do you want to play this team on the left side?") ? SIDE.LEFT : SIDE.RIGHT;
+    playTeamOnSide({team, side: chosenSide});
+  }
   return (
     <li className="team-row">
       <h3 onClick={() => detailTeam(team)}>{team.name}</h3>
-      <button onClick={() => editTeam(team)}>{getLabel("edit") || "Edit"}</button>
+      <div className="team-controllers">
+        <button onClick={() => handlePlayTeam()}>{getLabel("play") || "Play"}</button>
+        <button onClick={() => detailTeam(team)}>{getLabel("details") || "Details"}</button>
+        <button onClick={() => editTeam(team)}>{getLabel("edit") || "Edit"}</button>
+        <button onClick={() => deleteTeam(team)}>{getLabel("delete") || "Delete"}</button>
+      </div>
     </li>
   );
 }
 
-function TeamDetail({team, editTeam}) {
+function TeamDetail({team, editTeam, exitDetail}) {
   return (
-    <div className="team-detail">
+    <div className="detail-team">
       <h2>{team.name}</h2>
       <p>{getLabel("players") || "Players"}: {team.players.map(p => p.tshirt).join(', ')}</p>
-      <button onClick={editTeam}>{getLabel("edit") || "Edit"}</button>
+      <div className="team-detail-controls">
+        <button onClick={editTeam}>{getLabel("edit") || "Edit"}</button>
+        <button onClick={exitDetail}>{getLabel("close") || "Close"}</button>
+      </div>
     </div>
   );
 }
 
-function EditTeam({team, handleUpdateTeam, onDone}) {
+function EditTeam({team, handleUpdateTeam, onDone, cancelEdit}) {
   const { openTextSheet } = useInputSheet();
   const [newName, setNewName] = useState(team.name);
   const [playersText, setPlayersText] = useState(team.players.map(p => p.tshirt).join(", "));
@@ -120,7 +152,10 @@ function EditTeam({team, handleUpdateTeam, onDone}) {
         <span className="value-label">{getLabel("players") || "Players"}</span>
         <span className="value-display">{playersText || "—"}</span>
       </button>
-      <button onClick={handleSave}>{getLabel("save") || "Save"}</button>
+      <div className="team-controls">
+        <button onClick={handleSave}>{getLabel("save") || "Save"}</button>
+        <button onClick={cancelEdit}>{getLabel("cancel") || "Cancel"}</button>
+      </div>
     </div>
   );
 }

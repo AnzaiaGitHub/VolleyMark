@@ -23,6 +23,18 @@ export function createGameReducer({ storageManager, onTimeoutUsed, onStopTimer }
         onTimeoutUsed();
         return savedGame(game.useTimeOut(action.payload));
       }
+      case "USE_SUBSTITUTION": {
+        const { valid, message } = game.validateSubstitutionAvailable(action.payload);
+        if (!valid) {
+          alert(message);
+          return game;
+        }
+        return savedGame(game.useSubstitution(action.payload));
+      }
+      case "SUBSTITUTE_PLAYER":
+        return savedGame(game.substitutePlayer(action.payload.side, action.payload.outPlayer, action.payload.inPlayer));
+      case "DECREMENT_SUBSTITUTIONS":
+        return savedGame(game.decrementSubstitutions(action.payload));
       case "STOP_TIMER":
         onStopTimer();
         return game;
@@ -68,6 +80,9 @@ export function createGameReducer({ storageManager, onTimeoutUsed, onStopTimer }
         return savedGame(game.acceptWinSet(action.payload));
       case "SET_GAME":
         return action.payload instanceof Game ? action.payload : Game.fromJSON(action.payload);
+      case "SELECT_TEAM":
+        const selectedGame = game.selectTeam(action.payload.team, action.payload.side);
+        return savedGame(selectedGame);
       default:
         return game;
     }

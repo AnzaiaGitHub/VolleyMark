@@ -1,9 +1,10 @@
 export class MatchSettings {
-  constructor({ maxSetPoints, deuce, maxSets, maxTimeOuts } = {}) {
+  constructor({ maxSetPoints, deuce, maxSets, maxTimeOuts, setSubstitutions } = {}) {
     this.maxSetPoints = maxSetPoints ?? 25;
     this.deuce = deuce ?? { allowed: true, howMany: undefined };
     this.maxSets = maxSets ?? 5;
     this.maxTimeOuts = maxTimeOuts ?? 2;
+    this.setSubstitutions = setSubstitutions ?? 6;
   }
 
   static defaults() {
@@ -19,6 +20,7 @@ export class MatchSettings {
       deuce: data.deuce,
       maxSets: data.maxSets,
       maxTimeOuts: data.maxTimeOuts,
+      setSubstitutions: data.setSubstitutions,
     });
   }
 
@@ -28,6 +30,7 @@ export class MatchSettings {
       deuce: { ...this.deuce },
       maxSets: this.maxSets,
       maxTimeOuts: this.maxTimeOuts,
+      setSubstitutions: this.setSubstitutions,
     };
   }
 }

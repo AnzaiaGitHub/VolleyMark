@@ -35,6 +35,16 @@ export function MatchSettingsView({newSettings, setNewSettings}) {
         }}
       />
 
+      <NumberInputRow
+        label={getLabel("max_substitutions") || "Max Substitutions per Set"}
+        min={0}
+        max={15}
+        value={newSettings.setSubstitutions}
+        onChange={(value) => {
+          setNewSettings({...newSettings, setSubstitutions: value});
+        }}
+      />
+
       <DeuceSettings settings={newSettings} setNewSettings={setNewSettings} />
     </div>
   );
@@ -83,15 +93,23 @@ function DeuceSettings({settings, setNewSettings}) {
           setDeuce({...deuce, allowed: e.target.checked});
         }} />
       </div>
-      {deuce.allowed && (
+      <ConditionalInput condition={deuce.allowed}>
         <div className="deuce-item">
-          <label>{getLabel("how_many_deuces") || "How many deuces:"}</label>
-          <input type="number" min={1} value={deuce.howMany || undefined} placeholder={getLabel("deuce_leave_empty_for_unlimited") || "Empty for Unlimited deuces"} onChange={(e) => {
+          <label>{getLabel("deuce_point_difference") || "Deuce Point Difference:"}</label>
+          <input type="number" min={1} value={deuce.howMany || undefined} placeholder={getLabel("set_deuce_point_difference") || "Set deuce point difference"} onChange={(e) => {
             const howMany = e.target.value ? parseInt(e.target.value, 10) : undefined;
-            setDeuce({...deuce, howMany: howMany});
+            setDeuce({...deuce, howMany});
           }} />
         </div>
-      ) && false /** quitar false cuando se implemente la cantidad de deuces limitados */}
+      </ConditionalInput>
     </div>
   );
+}
+
+
+function ConditionalInput({condition, children}) {
+  if (!condition) {
+    return null;
+  }
+  return children;
 }
