@@ -164,6 +164,33 @@ export class Game {
     );
   }
 
+  useSubstitution(side) {
+    const teamKey = getTeamKey(side);
+    const updatedTeam = this.getTeam(side).useSubstitution();
+    return this.withTeams(
+      teamKey === "leftTeam" ? updatedTeam : this.leftTeam,
+      teamKey === "rightTeam" ? updatedTeam : this.rightTeam
+    );
+  }
+
+  decrementSubstitutions(side) {
+    const teamKey = getTeamKey(side);
+    const updatedTeam = this.getTeam(side).decrementSubstitutions();
+    return this.withTeams(
+      teamKey === "leftTeam" ? updatedTeam : this.leftTeam,
+      teamKey === "rightTeam" ? updatedTeam : this.rightTeam
+    );
+  }
+
+  substitutePlayer(side, outPlayerTshirt, inPlayerTshirt) {
+    const teamKey = getTeamKey(side);
+    const updatedTeam = this.getTeam(side).substitutePlayer(outPlayerTshirt, inPlayerTshirt);
+    return this.withTeams(
+      teamKey === "leftTeam" ? updatedTeam : this.leftTeam,
+      teamKey === "rightTeam" ? updatedTeam : this.rightTeam
+    );
+  }
+
   changeSides() {
     return this.withTeams(this.rightTeam, this.leftTeam);
   }
@@ -184,6 +211,7 @@ export class Game {
 
   restartGame(preserveData) {
     const fresh = Game.defaults();
+    fresh.settings = this.settings; // Preserve settings in case of restart, even if not preserving data
     if (!preserveData) {
       return fresh;
     }
@@ -277,6 +305,17 @@ export class Game {
     return { valid: true };
   }
 
+  validateSubstitutionAvailable(side) {
+    const usedSubstitutions = this.getTeam(side).usedSubstitutions;
+    if (this.settings.setSubstitutions.limited && usedSubstitutions >= this.settings.setSubstitutions.max) {
+      return {
+        valid: false,
+        message: getLabel("team_reached_max_substitutions") + " " + this.settings.setSubstitutions.max,
+      };
+    }
+    return { valid: true };
+  }
+
   toJSON() {
     return {
       gameDate: this.gameDate,
@@ -286,6 +325,13 @@ export class Game {
       rightTeam: this.rightTeam.toJSON(),
       STORAGE_VERSION: this.STORAGE_VERSION,
     };
+  }
+
+  selectTeam(team, side) {
+    return this.withTeams(
+      side === SIDE.LEFT ? team : this.leftTeam,
+      side === SIDE.RIGHT ? team : this.rightTeam
+    );
   }
 }
 

@@ -245,20 +245,19 @@ body{
   height: 100%;
   padding: 0 0 1.5vw;
   display: flex;
+  gap: 3vw;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  gap: 5vw;
   background-color: var(--dark-full);
   transition: 0.2s ease-in-out all;
   overflow: hidden;
 }
 .rotation-manager {
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 2vw;
 }
@@ -266,10 +265,9 @@ body{
   width: 100%;
   height: 30vw;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  gap: 2vw;
   align-items: center;
+  gap: 2vw;
   transition: 0.2s ease-in-out all;
 }
 .team-manager .rotation-container .rotation-list {
@@ -280,21 +278,17 @@ body{
   list-style: none;
   padding: 0;
   position: relative;
-  translate: 1rem;
-  background-color: var(--neon2);
   transition: 0.2s ease-in-out all;
-}
-.left .rotation-container .rotation-list {
-  translate: -1rem;
 }
 .rotation-container .rotation-btn_container {
   height: fit-content;
-  width: 100%;
+  height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
 }
-.left .rotation-btn_container {
+.left .rotation-container {
   flex-direction: row-reverse;
 }
 .team-manager .rotation-container .rotation-btn_container > button {
@@ -320,43 +314,23 @@ body{
 .rotation-btn_container button.rotate-forward > svg {
   transform: rotateY(180deg);
 }
-
-.rotation-list.right::before, .rotation-list.left::after {
-  content: 'NET';
-  position: absolute;
-  color: var(--neon2-full);
-  text-align: center;
-  font-size: 80%;
-  transform: rotate(-90deg);
-  translate: -13.8vw 10.6vw;
-  width: 25vw;
-  box-sizing: inherit;
-  border: 2px solid var(--neon3-full);
-  background-color: var(--dark);
-  letter-spacing: 0.5rem;
-  text-align: center;
-  padding: 0 1rem;
-}
-.rotation-list.left::after {
-  translate: 13.8vw 10.6vw;
-  transform: rotate(90deg);
-}
 .rotation-container .rotation-list > li.rotation-item {
-  height: calc(100%/3);
-  width: calc(100%/2);
+  height: 7vw;
+  width: 7vw;
+  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: 0.1s ease-in-out all;
-  border: 1px solid var(--neon3-full);
+  border: 1px solid var(--neon2-full);
   position: absolute;
 }
-.rotation-item.p1.right, .rotation-item.p4.left {right: 0; top: 0;}
-.rotation-item.p2.right, .rotation-item.p5.left {left: 0; top: 0;}
-.rotation-item.p3.right, .rotation-item.p6.left {top: calc(100%/3); left: 0;}
-.rotation-item.p4.right, .rotation-item.p1.left {left: 0; bottom: 0;}
-.rotation-item.p5.right, .rotation-item.p2.left {right: 0; bottom: 0;}
-.rotation-item.p6.right, .rotation-item.p3.left {top: calc(100%/3); right: 0;}
+.rotation-item.p1.right, .rotation-item.p4.left {right: 2vw; top: 1vw;}
+.rotation-item.p2.right, .rotation-item.p5.left {left: 2vw; top: 1vw;}
+.rotation-item.p3.right, .rotation-item.p6.left {top: calc(100%/2 - 3.5vw); left: 2vw;}
+.rotation-item.p4.right, .rotation-item.p1.left {left: 2vw; bottom: 1vw;}
+.rotation-item.p5.right, .rotation-item.p2.left {right: 2vw; bottom: 1vw;}
+.rotation-item.p6.right, .rotation-item.p3.left {top: calc(100%/2 - 3.5vw); right: 2vw;}
 .rotation-manager > .edit-rotation {
   width: 100%;
   height: 100%;
@@ -419,6 +393,38 @@ body{
   scale: 1.2;
 }
 
+.team-manager-controls {
+  display: flex;
+  width: 100%;
+  gap: 1vw;
+}
+.team-manager-controls button {
+  color: var(--neon2-full);
+  padding: 0 2vw;
+}
+.team-manager-controls button svg {
+  fill: var(--neon2-full);
+  stroke: var(--neon2-full);
+  width: 3vw;
+  height: 3vw;
+}
+
+.substitutions-container {
+  width: 100%;
+  height: 5vw;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 2vw;
+}
+.team-manager.left .substitutions-container {
+  flex-direction: row-reverse;
+}
+.team-manager .substitutions-container > button:active {
+  background-color: var(--neon3);
+  scale: 1.2;
+}
+
 .toolbar {
   position: fixed;
   height: 100vh;
@@ -455,12 +461,12 @@ body{
   height: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 0 2vw;
   overflow: hidden;
 }
 .toolbar-list {
-  padding: 9vw 0;
+  padding: 4vw 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -605,6 +611,60 @@ body{
   justify-content: space-evenly;
   align-items: center;
   gap: 2vw;
+}
+.admin-teams-view > h2 {
+  font-size: 1.5rem;
+  color: var(--light);
+  border-bottom: 1px solid var(--neon2-full);
+}
+.admin-teams-view .teams-list{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1vw;
+}
+.admin-teams-view .team-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--neon3-full);
+}
+.admin-teams-view .team-row .team-controllers {
+  font-size: 1.2rem;
+  color: var(--light);
+  cursor: pointer;
+  transition: 0.2s ease-in-out all;
+  border: 1px solid var(--neon3-full);
+  border-radius: 0.4rem;
+}
+.admin-teams-view .team-row .team-controllers button {
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--neon3-full);
+  border-radius: 0;
+  padding: 0.2rem 0.5rem;
+  color: var(--neon2-full);
+  transition: 0.2s ease-in-out all;
+}
+.admin-teams-view .team-row .team-controllers button:first-child {
+  border-left: none;
+}
+.admin-teams-view .edit-team, .admin-teams-view .detail-team {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2vw;
+}
+
+.admin-teams-view .add-team-button {
+  background-color: var(--neon3);
+  color: var(--light);
+  margin-top: 2vw;
 }
 
 button {

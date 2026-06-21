@@ -24,9 +24,9 @@ export function Toolbar({ settings, leftTeam, rightTeam, callAction }) {
         {isOpen ? getLabel("close") || "Close" : getLabel("more_actions") || "More Actions"}
       </button>
       <div className="toolbar-content">
-        <TeamManager side={SIDE.LEFT} team={leftTeam} callAction={callAction} maxTimeOuts={settings.maxTimeOuts}/>
+        <TeamManager side={SIDE.LEFT} team={leftTeam} callAction={callAction} maxTimeOuts={settings.maxTimeOuts} setSubstitutions={settings.setSubstitutions}/>
         <ToolbarList handleAction={handleAction} />
-        <TeamManager side={SIDE.RIGHT} team={rightTeam} callAction={callAction} maxTimeOuts={settings.maxTimeOuts} />
+        <TeamManager side={SIDE.RIGHT} team={rightTeam} callAction={callAction} maxTimeOuts={settings.maxTimeOuts} setSubstitutions={settings.setSubstitutions} />
       </div>
     </div>
   );

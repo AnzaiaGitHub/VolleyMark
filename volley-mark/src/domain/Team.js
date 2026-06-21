@@ -61,6 +61,16 @@ export class Team {
     });
   }
 
+  addPlayer(tshirt) {
+    const newPlayer = createPlayer(tshirt, this.players.length + 1);
+    return new Team({
+      id: this.id,
+      name: this.name,
+      players: [...this.players, newPlayer],
+      createdAt: this.createdAt,
+    });
+  }
+
   toJSON() {
     return {
       id: this.id,

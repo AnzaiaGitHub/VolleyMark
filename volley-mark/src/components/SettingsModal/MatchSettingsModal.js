@@ -25,6 +25,10 @@ export function MatchSettingsModal({settings, teams, callAction, callTeamAction}
     callAction("CLOSE_MATCH_SETTINGS", null);
   }
 
+  const handlePlayTeam = ({team, side}) => {
+    callAction("SELECT_TEAM", { team, side });
+  }
+
   const views = [
     { id: "matchSettings", label: getLabel("match_settings") || "Match Settings" },
     { id: "adminTeams", label: getLabel("manage_teams") || "Manage Teams" },
@@ -33,7 +37,7 @@ export function MatchSettingsModal({settings, teams, callAction, callTeamAction}
   const getActiveView = (view) => {
     switch(view.id) {
       case "adminTeams":
-        return <AdminTeamsView teams={newTeams} setNewTeams={setNewTeams} />;
+        return <AdminTeamsView teams={newTeams} setNewTeams={setNewTeams} playTeamOnSide={handlePlayTeam} />;
       case "matchSettings":
         return <MatchSettingsView newSettings={newSettings} setNewSettings={setNewSettings} />;
       default:

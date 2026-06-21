@@ -43,8 +43,8 @@ function Rotation({ positions, editPositions, side, callAction }) {
     callAction("INVERSE_ROTATE", side);
   };
 
-  const playerChange = () => {
-    console.log("Player change for " + side);
+  const getTrimedPosition = (position) => {
+    return position.length > 3 ? position.slice(0, 3) : position;
   };
 
   return (
@@ -55,14 +55,11 @@ function Rotation({ positions, editPositions, side, callAction }) {
             key={index}
             className={`rotation-item p${+index+1} ${side.toLowerCase()}`}
             onClick={() => editPositions(index)}>
-            <span className="position-label">{position}</span>
+            <span className="position-label">{getTrimedPosition(position)}</span>
           </li>
         ))}
       </ul>
       <div className="rotation-btn_container">
-        <button className="player-change" onClick={playerChange}>
-          {crossedArrowsSVG()}
-        </button>
         <button className="rotate-forward" onClick={rotate}>
           {restartSVG()}
         </button>
