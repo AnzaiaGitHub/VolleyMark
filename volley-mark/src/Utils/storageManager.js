@@ -3,7 +3,7 @@ import { getLabel } from "./Labels.js";
 import { Game, getLatestStorageVersion } from "../domain/Game";
 import { TeamLibrary } from "../domain/TeamLibrary";
 
-const COMPATIBLE_VERSIONS = ["1.1.1", "1.2.0"];
+const COMPATIBLE_VERSIONS = ["1.2.1"];
 
 export const storageManager = {
   clearGameState: () => {
