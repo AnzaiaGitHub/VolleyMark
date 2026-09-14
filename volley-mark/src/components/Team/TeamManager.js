@@ -7,15 +7,26 @@ import { crossedArrowsSVG } from "../../icons/crossedArrows";
 export function TeamManager({ team, side, callAction, maxTimeOuts, setSubstitutions }) {
   const [showSubstitutionModal, setShowSubstitutionModal] = useState(false);
 
-  const handleSubstitution = (newPositions) => {
+  const handleSubstitution = (newPositions, options = {}) => {
+    console.log("Substitution requested:");
+    console.log(newPositions);
+    console.log(options);
+    
     // newPositions array is passed from SubstitutionModal
     // The substitutePlayer logic in the domain handles adding new players
+    // Support in-court swaps or regular substitutions
+    // handler may receive a second arg with options (e.g. { inCourtChange: true })
     const outPlayer = team.positions.find((p, i) => newPositions[i] !== p);
     const inPlayer = newPositions.find((p, i) => team.positions[i] !== p);
-    
+
     if (outPlayer && inPlayer) {
-      callAction("SUBSTITUTE_PLAYER", { side, outPlayer, inPlayer });
-      callAction("USE_SUBSTITUTION", side);
+      if (options.inCourtChange) {
+        // Update full positions directly without counting as a substitution
+        callAction("UPDATE_POSITIONS", { side, newPositions });
+      } else {
+        callAction("SUBSTITUTE_PLAYER", { side, outPlayer, inPlayer });
+        callAction("USE_SUBSTITUTION", side);
+      }
     }
   };
 

@@ -61,10 +61,10 @@ function Rotation({ positions, editPositions, side, callAction, hasService }) {
         ))}
       </ul>
       <div className={`rotation-btn_container ${hasService ? " serve" : ""}`}>
-        {VolleyBallSVG()}
         <button className="rotate-forward" onClick={rotate}>
           {restartSVG()}
         </button>
+        {VolleyBallSVG()}
         <button className="rotate-backward" onClick={inverseRotate}>
           {restartSVG()}
         </button>

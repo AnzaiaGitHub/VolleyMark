@@ -26,9 +26,8 @@ export const Timer = ({seconds, callAction}) => {
   }, [remainingSeconds, stop]);
 
   return (
-    <div className="timer">
+    <div className="timer" onClick={stop}>
       <p>{remainingSeconds}</p>
-      <button onClick={stop}>{(getLabel("stop") || "Stop")}</button>
     </div>
   );
 };

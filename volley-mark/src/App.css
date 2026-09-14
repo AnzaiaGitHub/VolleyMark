@@ -188,20 +188,20 @@ body{
 
 .timer {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  left: 90vw;
+  top: 10vw;
   transform: translate(-50%, -50%);
-  width: 40vw;
-  height: 40vw;
+  width: 10vw;
+  height: 10vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 4vw;
-  font-size: 10vw;
+  font-size: 4vw;
   font-weight: bold;
   text-align: center;
-  background-color: var(--dark);
+  background-color: var(--neon2-full);
   color: var(--light);
   border-radius: 50%;
   z-index: 50;
@@ -214,13 +214,9 @@ body{
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border-top: 0.3vw solid var(--neon2-full);
+  border-top: 0.3vw solid var(--neon3-full);
   animation: rotate 1s linear infinite;
   z-index: -1;
-}
-.timer button:active {
-  background-color: var(--neon3);
-  scale: 1.1;
 }
 @keyframes rotate {
   0%{
@@ -296,11 +292,8 @@ body{
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
-}
-.left .rotation-container .rotation-btn_container {
-  flex-direction: column-reverse;
 }
 .left .rotation-container {
   flex-direction: row-reverse;
@@ -589,17 +582,14 @@ body{
   overflow-y: auto;
   border: 1px solid var(--neon3-full);
   padding: 2vw;
+  gap: 2vw;
 }
 .settings-form-container {
   width: 100%;
   height: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto auto;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 4vh;
+  gap: 4vw;
 }
 .deuce-settings {
   display: flex;
@@ -625,6 +615,7 @@ body{
   justify-content: space-evenly;
   align-items: center;
   gap: 2vw;
+  margin-top: 2vh;
 }
 .admin-teams-view > h2 {
   font-size: 1.5rem;
@@ -646,6 +637,7 @@ body{
   align-items: center;
   padding: 0.5rem;
   border-bottom: 1px solid var(--neon3-full);
+  gap: 1vw;
 }
 .admin-teams-view .team-row .team-controllers {
   font-size: 1.2rem;
@@ -678,7 +670,7 @@ body{
 .admin-teams-view .add-team-button {
   background-color: var(--neon3);
   color: var(--light);
-  margin-top: 2vw;
+  margin-top: 4vw;
 }
 
 button {
@@ -715,15 +707,143 @@ input {
 }
 
 
-@media landscape and (max-width: 1920px) {
+@media (orientation: landscape) and (max-width: 1920px) {
   body {
     width: 100vw;
     height: 100vh;
   }
 }
-@media portrait and (max-width: 1920px) {
+@media (orientation: portrait) and (max-width: 1920px) {
   body {
     width: 100vw;
-    height: 100vh;
+    height: 100%;
+  }
+  .toolbar {
+    transform: translateX(-50%) translateY(-10vh);
+  }
+  .toolbar.open {
+    height: fit-content;
+    transform: translateX(-50%) translateY(calc(-110% - 14vw));
+    box-shadow: 0vh -0.5rem 1.5vh var(--neon2);
+  }
+
+  /*Toolbar*/
+  .toolbar-list {
+    position: absolute;
+    top: 110%;
+    width: 100%;
+    height: 10vw;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  .toolbar-list > .toolbar-item {
+    width: 10vw;
+    height: 10vw;
+  }
+  .toolbar-item > button {
+    border-radius: 1vh;
+  }
+
+  /*toolbar-team-manager*/
+  .team-manager {
+    width: 50%;
+    height: 100%;
+    gap: 4vh;
+  }
+  .rotation-manager {
+    width: 100%;
+    height: 55vw;
+  }
+  .rotation-manager .rotation-container {
+    width: 100%;
+    height: 100%;
+    justify-content: space-evenly;
+    flex-direction: column;
+    gap: 2vh;
+  }
+  .rotation-manager .rotation-container .rotation-btn_container {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+  }
+  .rotation-manager .rotation-container .rotation-btn_container > button {
+    width: 10vw;
+    height: 10vw;
+  }
+  .rotation-btn_container .volley-ball {
+    width: 10vw;
+    height: 10vw;
+  }
+
+  .rotation-manager .rotation-container .rotation-list {
+    min-height: 40vw;
+    min-width: 40vw;
+  }
+  .rotation-manager .rotation-list > li.rotation-item {
+    height: 10vw;
+    width: 10vw;
+  }
+  .rotation-item.p1.right, .rotation-item.p4.left {right: 4vw; top: 3vw;}
+  .rotation-item.p2.right, .rotation-item.p5.left {left: 4vw; top: 3vw;}
+  .rotation-item.p3.right, .rotation-item.p6.left {top: calc(100%/2 - 5vw); left: 4vw;}
+  .rotation-item.p4.right, .rotation-item.p1.left {left: 4vw; bottom: 3vw;}
+  .rotation-item.p5.right, .rotation-item.p2.left {right: 4vw; bottom: 3vw;}
+  .rotation-item.p6.right, .rotation-item.p3.left {top: calc(100%/2 - 5vw); right: 4vw;}
+
+  .team-manager-controls div, .team-manager.left .team-manager-controls div {
+    flex-direction: column-reverse;
+    height: 100%;
+  }
+  .team-manager-controls button{
+    height: 10vw;
+    padding: 0 4vw;
+  }
+
+
+  /*Toolbar settings inner view*/
+  .settings-form-container {
+    width: 90vw;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+  }
+
+  .match-settings-modal .modal-settings-header button {
+    font-size: 1.5vh;
+    padding: 1vw 2vw;
+    border-radius: 1vh 1vh 0 0;
+  }
+
+  .timer {
+    width: 15vw;
+    height: 15vw;
+    font-size: 5vw;
+  }
+
+  .teams-list .team-row {
+    height: 10vh;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    gap: 1vh;
+  }
+
+  .teams-list .team-row .team-controllers {
+    height: 4vh;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 1vw;
+  }
+
+  .teams-list .team-row .team-controllers button {
+    height: 100%;
+    padding: 2vw;
+  }
+
+  .modal-actions {
+    margin-top: 1vh;
   }
 }
