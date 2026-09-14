@@ -12,15 +12,16 @@
 }
 
 .substitution-modal {
-  background: #2d2d2d;
+  background: var(--dark-full);
   border-radius: 12px;
-  max-width: 600px;
+  max-width: 800px;
   width: 90%;
   max-height: 90vh;
   height: max-content;
   display: flex;
   flex-direction: column;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--neon2);
 }
 
 .substitution-modal .modal-header {
@@ -28,7 +29,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1vw 3vw;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid var(--neon2);
 }
 
 .substitution-modal .modal-header h2 {
@@ -42,7 +43,7 @@
   border: none;
   font-size: 2rem;
   cursor: pointer;
-  color: #999;
+  color: var(--neon2-full);
   padding: 0;
   width: 4vw;
   height: 4vw;
@@ -74,6 +75,19 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+.substitution-modal .section .in-court-toggle {
+  font-size: 0.9rem;
+  color: #ccc;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.substitution-modal .section .in-court-toggle input[type="checkbox"] {
+  margin: 0;
+  padding: 0;
+  width: 4vw;
+}
 
 .substitution-modal .players-list {
   display: grid;
@@ -89,16 +103,16 @@
   padding: 0.8rem 0.5rem;
   width: 100%;
   height: auto;
-  border: 2px solid #444;
+  border: 2px solid var(--neon2);
   border-radius: 8px;
-  background: #3a3a3a;
+  background: var(--dark);
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  color: #e0e0e0;
+  color: var(--light);
 }
 
 .substitution-modal .player-btn:hover {
@@ -115,7 +129,7 @@
 
 .substitution-modal .player-btn .position {
   font-size: 0.85rem;
-  color: #999;
+  color: #aaa;
   font-weight: 500;
 }
 
@@ -130,9 +144,9 @@
   width: 100%;
   height: auto;
   padding: 12px;
-  border: 2px dashed #555;
+  border: 2px dashed var(--neon2-full);
   border-radius: 8px;
-  background: #353535;
+  background: var(--dark);
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
@@ -142,8 +156,8 @@
 }
 
 .substitution-modal .toggle-add-btn:hover {
-  border-color: #777;
-  background: #3f3f3f;
+  border-color: var(--neon2-full);
+  background: var(--dark);
   color: #ddd;
 }
 
@@ -204,8 +218,8 @@
   display: flex;
   gap: 10px;
   padding: 20px;
-  border-top: 1px solid #444;
-  background: #252525;
+  border-top: 1px solid var(--neon2);
+  background: var(--dark-full);
 }
 .substitution-modal .modal-actions button {
   height: auto;
@@ -214,7 +228,7 @@
 .substitution-modal .confirm-btn {
   flex: 1;
   padding: 12px;
-  background: #4caf50;
+  background: var(--neon3);
   color: white;
   border: none;
   border-radius: 6px;
@@ -229,14 +243,14 @@
 }
 
 .substitution-modal .confirm-btn:disabled {
-  background: #555;
+  background: #aaa;
   cursor: not-allowed;
 }
 
 .substitution-modal .cancel-btn {
   flex: 1;
   padding: 12px;
-  background: #555;
+  background: var(--neon2);
   color: #e0e0e0;
   border: none;
   border-radius: 6px;

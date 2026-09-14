@@ -7,6 +7,7 @@ export function SubstitutionModal({ team, positions, side, onSubstitute, onClose
   const [selectedInPlayer, setSelectedInPlayer] = useState(null);
   const [showAddPlayer, setShowAddPlayer] = useState(false);
   const [newPlayerName, setNewPlayerName] = useState("");
+  const [isInCourtChange, setIsInCourtChange] = useState(false);
 
   // Get players currently on court
   const playersOnCourt = positions;
@@ -39,10 +40,25 @@ export function SubstitutionModal({ team, positions, side, onSubstitute, onClose
 
     const newPositions = [...positions];
     const outIndex = newPositions.indexOf(outPlayer);
+    const inIndex = newPositions.indexOf(inPlayer);
     if (outIndex !== -1) {
-      newPositions[outIndex] = inPlayer;
-      onSubstitute(newPositions);
-      onClose();
+      if (isInCourtChange && inIndex !== -1) {
+        // Swap both positions
+        const tmp = newPositions[outIndex];
+        newPositions[outIndex] = newPositions[inIndex];
+        newPositions[inIndex] = tmp;
+      } else {
+        newPositions[outIndex] = inPlayer;
+      }
+      onSubstitute(newPositions, { inCourtChange: isInCourtChange });
+      
+      if(isInCourtChange) {
+        setSelectedOutPlayer(null);
+        setSelectedInPlayer(null);
+        setShowAddPlayer(false);
+      } else {
+        onClose();
+      }
     }
   };
 
@@ -52,7 +68,9 @@ export function SubstitutionModal({ team, positions, side, onSubstitute, onClose
     }
   };
 
-  const isValid = selectedOutPlayer !== null && (selectedInPlayer !== null || (showAddPlayer && newPlayerName.trim()));
+  const isValid =
+    selectedOutPlayer !== null &&
+    (isInCourtChange ? selectedInPlayer !== null : (selectedInPlayer !== null || (showAddPlayer && newPlayerName.trim())));
 
   return (
     <div className="substitution-modal-overlay">
@@ -70,11 +88,27 @@ export function SubstitutionModal({ team, positions, side, onSubstitute, onClose
               {playersOnCourt.map((player, index) => (
                 <button
                   key={index}
-                  className={`player-btn ${selectedOutPlayer === player ? "selected" : ""}`}
+                  className={`player-btn ${selectedOutPlayer === player || selectedInPlayer === player ? "selected" : ""}`}
                   onClick={() => {
-                    setSelectedOutPlayer(player);
-                    setSelectedInPlayer(null);
-                    setShowAddPlayer(false);
+                    if (isInCourtChange) {
+                      // Toggle/select two on-court players to swap
+                      if (selectedOutPlayer === null) {
+                        setSelectedOutPlayer(player);
+                      } else if (selectedOutPlayer === player) {
+                        setSelectedOutPlayer(null);
+                        setSelectedInPlayer(null);
+                      } else if (selectedInPlayer === player) {
+                        setSelectedInPlayer(null);
+                      } else {
+                        setSelectedInPlayer(player);
+                        // call confirm directly using the clicked player to avoid state update delays
+                        handleConfirmSubstitution(selectedOutPlayer, player);
+                      }
+                    } else {
+                      setSelectedOutPlayer(player);
+                      setSelectedInPlayer(null);
+                      setShowAddPlayer(false);
+                    }
                   }}
                 >
                   <span className="position">{index + 1}</span>
@@ -83,12 +117,26 @@ export function SubstitutionModal({ team, positions, side, onSubstitute, onClose
               ))}
             </div>
           </section>
+          <section className="section">
+            <label className="in-court-toggle">
+              <input
+                type="checkbox"
+                checked={isInCourtChange}
+                onChange={() => {
+                  setIsInCourtChange(!isInCourtChange);
+                  setSelectedInPlayer(null);
+                  setShowAddPlayer(false);
+                }}
+              />
+              {getLabel("change_places_in_court") || "Change places in court (no substitution count)"}
+            </label>
+          </section>
 
           {/* Replacement Options */}
           {selectedOutPlayer && (
             <>
               {/* Available Players on Bench */}
-              {playersOnBench.length > 0 && (
+              {!isInCourtChange && playersOnBench.length > 0 && (
                 <section className="section">
                   <h3>{getLabel("available_players") || "Available Players"}</h3>
                   <div className="players-list bench">
@@ -108,37 +156,38 @@ export function SubstitutionModal({ team, positions, side, onSubstitute, onClose
                 </section>
               )}
 
-              {/* Add New Player Option */}
-              <section className="section">
-                <button
-                  className={`toggle-add-btn ${showAddPlayer ? "active" : ""}`}
-                  onClick={() => {
-                    setShowAddPlayer(!showAddPlayer);
-                    setSelectedInPlayer(null);
-                  }}
-                >
-                  {showAddPlayer ? "−" : "+"} {getLabel("add_new_player") || "Add New Player"}
-                </button>
+              {!isInCourtChange && (
+                <section className="section">
+                  <button
+                    className={`toggle-add-btn ${showAddPlayer ? "active" : ""}`}
+                    onClick={() => {
+                      setShowAddPlayer(!showAddPlayer);
+                      setSelectedInPlayer(null);
+                    }}
+                  >
+                    {showAddPlayer ? "−" : "+"} {getLabel("add_new_player") || "Add New Player"}
+                  </button>
 
-                {showAddPlayer && (
-                  <div className="add-player-form">
-                    <input
-                      type="text"
-                      placeholder={getLabel("player_name") || "Player name"}
-                      value={newPlayerName}
-                      onChange={(e) => setNewPlayerName(e.target.value)}
-                      autoFocus
-                    />
-                    <button
-                      className="add-player-submit"
-                      onClick={handleAddNewPlayer}
-                      disabled={!newPlayerName.trim()}
-                    >
-                      {getLabel("add") || "Add"}
-                    </button>
-                  </div>
-                )}
-              </section>
+                  {showAddPlayer && (
+                    <div className="add-player-form">
+                      <input
+                        type="text"
+                        placeholder={getLabel("player_name") || "Player name"}
+                        value={newPlayerName}
+                        onChange={(e) => setNewPlayerName(e.target.value)}
+                        autoFocus
+                      />
+                      <button
+                        className="add-player-submit"
+                        onClick={handleAddNewPlayer}
+                        disabled={!newPlayerName.trim()}
+                      >
+                        {getLabel("add") || "Add"}
+                      </button>
+                    </div>
+                  )}
+                </section>
+              )}
             </>
           )}
         </div>
